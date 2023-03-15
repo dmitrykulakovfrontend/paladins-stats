@@ -2,11 +2,29 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { type MouseEvent } from "react";
+import { type getDataUsedRes } from "~/types/apiResponses";
 
-async function handleTest(e: MouseEvent<HTMLButtonElement>) {
-  const data = await fetch("/api/usage");
-  const response = (await data.json()) as unknown;
-  console.log(response);
+function handleApiUsage(e: MouseEvent<HTMLButtonElement>) {
+  fetch("/api/usage")
+    .then((data) => data.json())
+    .then((data: Error | getDataUsedRes) => {
+      if (data instanceof Error) {
+        console.error(data);
+      } else console.log(data);
+    })
+    .catch((e) => console.error(e));
+  return;
+}
+function handleApiTest(e: MouseEvent<HTMLButtonElement>) {
+  fetch("/api/test")
+    .then((data) => data.json())
+    .then((data: any) => {
+      if (data instanceof Error) {
+        console.error(data);
+      } else console.log(data);
+    })
+    .catch((e) => console.error(e));
+  return;
 }
 
 const Home: NextPage = () => {
@@ -24,25 +42,21 @@ const Home: NextPage = () => {
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <button
-              onClick={handleTest}
+              onClick={handleApiUsage}
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
             >
-              <h3 className="text-2xl font-bold">Test api route →</h3>
+              <h3 className="text-2xl font-bold">Get data usage →</h3>
               <div className="text-left text-lg">
                 Just the basics - Everything you need to know
               </div>
             </button>
-            <Link
+            <button
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
+              onClick={handleApiTest}
             >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
+              <h3 className="text-2xl font-bold">Test route →</h3>
+              <div className="text-lg">Learn more.</div>
+            </button>
           </div>
         </div>
       </main>

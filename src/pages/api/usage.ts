@@ -5,7 +5,7 @@ import validateSession from "~/utils/validateSession";
 import { Methods } from "~/constants";
 import createSignature from "../../utils/createSignature";
 import createTimeStamp from "../../utils/createTimeStamp";
-import { type getDataUsedRes } from "~/types/apiResponses";
+import { type GetDataUsedRes } from "~/types/apiResponses";
 import fetchAPI from "~/utils/fetchAPI";
 
 export default async function handler(
@@ -19,6 +19,6 @@ export default async function handler(
   if (sessionID instanceof Error) return res.status(503).json(sessionID);
 
   const url = `${API_ENDPOINT}/${Methods.GET_DATA_USED}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}`;
-  const data = await fetchAPI<getDataUsedRes>(url);
+  const data = await fetchAPI<GetDataUsedRes>(url);
   res.status(200).json(data);
 }

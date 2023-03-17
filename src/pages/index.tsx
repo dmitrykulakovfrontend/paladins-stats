@@ -2,12 +2,12 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { type MouseEvent } from "react";
-import { type getDataUsedRes } from "~/types/apiResponses";
+import { type GetDataUsedRes } from "~/types/apiResponses";
 
 function handleApiUsage(e: MouseEvent<HTMLButtonElement>) {
   fetch("/api/usage")
     .then((data) => data.json())
-    .then((data: Error | getDataUsedRes) => {
+    .then((data: Error | GetDataUsedRes) => {
       if (data instanceof Error) {
         console.error(data);
       } else console.log(data);

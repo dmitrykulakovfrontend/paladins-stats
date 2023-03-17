@@ -1,7 +1,7 @@
 import { getCookie, setCookie } from "cookies-next";
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { API_ENDPOINT, Minutes15InSeconds } from "~/constants";
-import { type createSessionRes } from "~/types/apiResponses";
+import { type CreateSessionRes } from "~/types/apiResponses";
 import { env } from "~/env.mjs";
 import createSignature from "./createSignature";
 import { Methods } from "~/constants";
@@ -21,7 +21,7 @@ export default async function validateSession(
   });
   if (!session) {
     console.log("Creating session cookie...");
-    const data = await fetchAPI<createSessionRes>(
+    const data = await fetchAPI<CreateSessionRes>(
       `${API_ENDPOINT}/createsessionjson/${env.DEV_ID}/${signature}/${timestamp}`
     );
     if (data instanceof Error) {

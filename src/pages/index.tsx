@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { type MouseEvent } from "react";
+import { useState, type FormEvent, type MouseEvent } from "react";
 import { type GetDataUsedRes } from "~/types/apiResponses";
 
 function handleApiUsage(e: MouseEvent<HTMLButtonElement>) {
@@ -26,8 +26,27 @@ function handleApiTest(e: MouseEvent<HTMLButtonElement>) {
     .catch((e) => console.error(e));
   return;
 }
+function handleDBTest(e: FormEvent<HTMLFormElement>, date: string) {
+  e.preventDefault();
+  console.log(date);
+
+  fetch("/api/db", {
+    method: "POST",
+    body: JSON.stringify({ date: date }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((data) => data.json())
+    .then((data: any) => {
+      console.log(data);
+    })
+    .catch((e) => console.error(e));
+  return;
+}
 
 const Home: NextPage = () => {
+  const [date, setDate] = useState("");
   return (
     <>
       <Head>
@@ -57,6 +76,32 @@ const Home: NextPage = () => {
               <h3 className="text-2xl font-bold">Test route →</h3>
               <div className="text-lg">Learn more.</div>
             </button>
+            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+              <h3 className="text-2xl font-bold">
+                Gather data for specified date →
+              </h3>
+              <form
+                className="flex flex-col items-end"
+                onSubmit={(e) => handleDBTest(e, date)}
+              >
+                <label className="flex w-full justify-between">
+                  Date:
+                  <input
+                    onChange={(e) => setDate(e.target.value)}
+                    type="date"
+                    name="date"
+                    required
+                    className="text-black"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="mt-4 w-fit bg-purple-400 py-1 px-2 text-right text-gray-700"
+                >
+                  Request
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </main>

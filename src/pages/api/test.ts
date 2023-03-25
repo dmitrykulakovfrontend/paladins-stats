@@ -30,6 +30,7 @@ export default async function handler(
     `${urlMatchQueueIds}/20,00`
   );
   if (matches instanceof Error) return res.status(503).json(matches);
+  console.log(matches);
   const matchIds = matches.slice(0, 10).map((obj) => obj.Match);
 
   const signatureBatch = createSignature(Methods.GET_MATCH_DETAILS_BATCH);

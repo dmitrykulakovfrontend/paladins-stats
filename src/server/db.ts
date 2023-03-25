@@ -1,14 +1,17 @@
-import { PrismaClient } from "@prisma/client";
-
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { env } from "~/env.mjs";
+import { Pool } from "pg";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+let conn: undefined | Pool;
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log:
-      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+if (!conn) {
+  conn = new Pool({
+    user: env.PGSQL_USER,
+    password: env.PGSQL_PASSWORD,
+    host: env.PGSQL_HOST,
+    port: +env.PGSQL_PORT,
+    database: env.PGSQL_DATABASE,
   });
+}
 
-if (env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export default conn;

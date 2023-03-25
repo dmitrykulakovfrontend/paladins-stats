@@ -9,6 +9,12 @@ const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   DEV_ID: z.string(),
   AUTH_KEY: z.string(),
+
+  PGSQL_USER: z.string(),
+  PGSQL_PASSWORD: z.string(),
+  PGSQL_HOST: z.string(),
+  PGSQL_PORT: z.string(),
+  PGSQL_DATABASE: z.string(),
 });
 
 /**
@@ -31,6 +37,12 @@ const processEnv = {
   DEV_ID: process.env.DEV_ID,
   AUTH_KEY: process.env.AUTH_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+
+  PGSQL_USER: process.env.PGSQL_USER,
+  PGSQL_PASSWORD: process.env.PGSQL_PASSWORD,
+  PGSQL_HOST: process.env.PGSQL_HOST,
+  PGSQL_PORT: process.env.PGSQL_PORT,
+  PGSQL_DATABASE: process.env.PGSQL_DATABASE,
 };
 
 // Don't touch the part below

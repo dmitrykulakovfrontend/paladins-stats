@@ -5,6 +5,7 @@ export enum Methods {
   GET_DATA_USED = "getdataused",
   GET_MATCH_IDS_BY_QUEUE = "getmatchidsbyqueue",
   GET_MATCH_DETAILS_BATCH = "getmatchdetailsbatch",
+  GET_CHAMPIONS = "getchampions",
 }
 
 export enum Queues {

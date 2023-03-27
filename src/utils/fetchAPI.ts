@@ -1,7 +1,7 @@
 export default async function fetchAPI<T>(url: string) {
   const response = await fetch(url);
   if (response.status !== 200) {
-    console.error(response);
+    console.error({ status: response.status, text: response.statusText, url });
     return new HirezApiError(response.status, response.statusText, url);
   }
   const data = (await response.json()) as T;

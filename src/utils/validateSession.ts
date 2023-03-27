@@ -25,7 +25,8 @@ export default async function validateSession(
       `${API_ENDPOINT}/createsessionjson/${env.DEV_ID}/${signature}/${timestamp}`
     );
     if (data instanceof Error) {
-      return data;
+      res.status(503).json(data);
+      return "";
     }
     setCookie("paladinssession", data.session_id, {
       maxAge: Minutes15InSeconds,

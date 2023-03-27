@@ -12,11 +12,19 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const signature = createSignature(Methods.GET_DATA_USED);
+  const signature = createSignature(Methods.GET_CHAMPIONS);
   const timestamp = createTimeStamp();
   const sessionID = await validateSession(req, res);
 
-  const url = `${API_ENDPOINT}/${Methods.GET_DATA_USED}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}`;
+  const url = `${API_ENDPOINT}/${Methods.GET_CHAMPIONS}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/1`;
   const data = await fetchAPI<GetDataUsedRes>(url);
+  console.log(url);
+
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, referer-path"
+  );
   res.status(200).json(data);
 }

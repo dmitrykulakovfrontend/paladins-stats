@@ -15,6 +15,8 @@ const server = z.object({
   PGSQL_HOST: z.string(),
   PGSQL_PORT: z.string(),
   PGSQL_DATABASE: z.string(),
+
+  SUPABASE_ANON_KEY: z.string(),
 });
 
 /**
@@ -43,6 +45,8 @@ const processEnv = {
   PGSQL_HOST: process.env.PGSQL_HOST,
   PGSQL_PORT: process.env.PGSQL_PORT,
   PGSQL_DATABASE: process.env.PGSQL_DATABASE,
+
+  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
 };
 
 // Don't touch the part below

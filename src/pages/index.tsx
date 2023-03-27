@@ -32,7 +32,24 @@ function handleDBTest(e: FormEvent<HTMLFormElement>, date: string) {
 
   fetch("/api/db", {
     method: "POST",
-    body: JSON.stringify({ date: date }),
+    body: JSON.stringify({ date }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((data) => data.json())
+    .then((data: any) => {
+      console.log(data);
+    })
+    .catch((e) => console.error(e));
+  return;
+}
+function handleMatchAdd(e: FormEvent<HTMLFormElement>, id: string) {
+  e.preventDefault();
+
+  fetch("/api/match", {
+    method: "POST",
+    body: JSON.stringify({ id }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -47,6 +64,7 @@ function handleDBTest(e: FormEvent<HTMLFormElement>, date: string) {
 
 const Home: NextPage = () => {
   const [date, setDate] = useState("");
+  const [matchId, setMatchId] = useState("");
   return (
     <>
       <Head>
@@ -90,6 +108,33 @@ const Home: NextPage = () => {
                     onChange={(e) => setDate(e.target.value)}
                     type="date"
                     name="date"
+                    value={date}
+                    required
+                    className="text-black"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="mt-4 w-fit bg-purple-400 py-1 px-2 text-right text-gray-700"
+                >
+                  Request
+                </button>
+              </form>
+            </div>
+            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+              <h3 className="text-2xl font-bold">
+                Add particular id in database →
+              </h3>
+              <form
+                className="flex flex-col items-end"
+                onSubmit={(e) => handleMatchAdd(e, matchId)}
+              >
+                <label className="flex w-full justify-between">
+                  Id:
+                  <input
+                    onChange={(e) => setMatchId(e.target.value)}
+                    type="number"
+                    value={matchId}
                     required
                     className="text-black"
                   />

@@ -5,16 +5,9 @@ import { z } from "zod";
  * built with invalid env vars.
  */
 const server = z.object({
-  DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   DEV_ID: z.string(),
   AUTH_KEY: z.string(),
-
-  PGSQL_USER: z.string(),
-  PGSQL_PASSWORD: z.string(),
-  PGSQL_HOST: z.string(),
-  PGSQL_PORT: z.string(),
-  PGSQL_DATABASE: z.string(),
 
   SUPABASE_ANON_KEY: z.string(),
 });
@@ -34,17 +27,10 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
-  DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   DEV_ID: process.env.DEV_ID,
   AUTH_KEY: process.env.AUTH_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
-
-  PGSQL_USER: process.env.PGSQL_USER,
-  PGSQL_PASSWORD: process.env.PGSQL_PASSWORD,
-  PGSQL_HOST: process.env.PGSQL_HOST,
-  PGSQL_PORT: process.env.PGSQL_PORT,
-  PGSQL_DATABASE: process.env.PGSQL_DATABASE,
 
   SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
 };

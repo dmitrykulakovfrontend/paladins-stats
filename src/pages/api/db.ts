@@ -1,5 +1,4 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
-import { type GetMatchIdsByQueue } from "pe-paladins.js/lib/apiResponse";
 import { env } from "~/env.mjs";
 import { Methods, API_ENDPOINT, Queues } from "~/constants";
 import createSignature from "~/utils/createSignature";
@@ -7,8 +6,6 @@ import createTimeStamp from "~/utils/createTimeStamp";
 import fetchAPI from "~/utils/fetchAPI";
 import validateSession from "~/utils/validateSession";
 import { testSchema } from "../../utils/schemas/test";
-import { supabase } from "~/server/supabaseClient";
-import { type Match } from "~/types/database";
 
 export default async function handler(
   req: NextApiRequest,

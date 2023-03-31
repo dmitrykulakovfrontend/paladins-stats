@@ -9,7 +9,9 @@ const server = z.object({
   DEV_ID: z.string(),
   AUTH_KEY: z.string(),
 
-  SUPABASE_ANON_KEY: z.string(),
+  DATABASE_HOST: z.string(),
+  DATABASE_USERNAME: z.string(),
+  DATABASE_PASSWORD: z.string(),
 });
 
 /**
@@ -32,7 +34,9 @@ const processEnv = {
   AUTH_KEY: process.env.AUTH_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+  DATABASE_HOST: process.env.DATABASE_HOST,
+  DATABASE_USERNAME: process.env.DATABASE_USERNAME,
+  DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
 };
 
 // Don't touch the part below

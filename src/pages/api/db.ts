@@ -6,13 +6,13 @@ import createTimeStamp from "~/utils/createTimeStamp";
 import fetchAPI from "~/utils/fetchAPI";
 import validateSession from "~/utils/validateSession";
 import { testSchema } from "../../utils/schemas/test";
+import { type GetMatchIdsByQueue } from "~/types/apiResponses";
+import { db } from "../../server/db";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // res.status(200).json(result);
-
   const signature = createSignature(Methods.GET_MATCH_IDS_BY_QUEUE);
   const timestamp = createTimeStamp();
   const sessionID = await validateSession(req, res);
@@ -33,7 +33,7 @@ export default async function handler(
     days.push(fetchAPI<GetMatchIdsByQueue>(`${urlMatchQueueIds}/${hour}`));
   }
   const daysResults = await Promise.all(days);
-  const data: Match[] = [];
+  const data: { match_id: number; date: Date; region: string }[] = [];
 
   daysResults.forEach((result) => {
     if (result instanceof Error) {
@@ -42,15 +42,15 @@ export default async function handler(
       data.push(
         ...result.map((obj) => ({
           match_id: +obj.Match,
-          date: obj.Entry_Datetime,
+          date: new Date(obj.Entry_Datetime),
           region: obj.Region,
         }))
       );
     }
   });
-
-  const { error } = await supabase.from("matches").insert(data);
-  if (error) {
+  try {
+    await db.insertInto("matches").values(data).executeTakeFirstOrThrow();
+  } catch (error) {
     return res.status(503).json(error);
   }
   // if (matches instanceof Error) return res.status(503).json(matches);

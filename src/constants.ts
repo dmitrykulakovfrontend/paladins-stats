@@ -6,9 +6,11 @@ export enum Methods {
   GET_MATCH_IDS_BY_QUEUE = "getmatchidsbyqueue",
   GET_MATCH_DETAILS_BATCH = "getmatchdetailsbatch",
   GET_CHAMPIONS = "getchampions",
+  GET_PLAYER = "getplayer",
 }
 
 export enum Queues {
   SIEGE = "424",
   COMPETITIVE_KBM = "486",
+  COMPETITIVE_GAMEPAD = "428",
 }

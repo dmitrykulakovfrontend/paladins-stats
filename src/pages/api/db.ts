@@ -17,19 +17,14 @@ export default async function handler(
   const timestamp = createTimeStamp();
   const sessionID = await validateSession(req, res);
 
-  const result = testSchema.safeParse(req.body);
-  let body;
-  if (!result.success) {
-    return res.status(503).json(new Error("Problem with date"));
-  } else {
-    body = result.data;
-  }
+  const body = testSchema.parse(req.body);
   const date = body.date.replace(/-/g, "");
   console.log({ date });
 
   const urlMatchQueueIds = `${API_ENDPOINT}/${Methods.GET_MATCH_IDS_BY_QUEUE}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/${Queues.COMPETITIVE_KBM}/${date}/`;
   const days = [];
-  for (let hour = 0; hour <= 23; hour++) {
+  // for (let hour = 0; hour <= 23; hour++) {
+  for (let hour = 0; hour <= 1; hour++) {
     days.push(fetchAPI<GetMatchIdsByQueue>(`${urlMatchQueueIds}/${hour}`));
   }
   const daysResults = await Promise.all(days);
@@ -48,11 +43,12 @@ export default async function handler(
       );
     }
   });
-  try {
-    await db.insertInto("matches").values(data).executeTakeFirstOrThrow();
-  } catch (error) {
-    return res.status(503).json(error);
-  }
+  // try {
+  //   await db.insertInto("matches").values(data).executeTakeFirstOrThrow();
+  // } catch (error) {
+  //   return res.status(503).json(error);
+  // }
+
   // if (matches instanceof Error) return res.status(503).json(matches);
   // console.log(matches);
   // const matchIds = matches.slice(0, 10).map((obj) => obj.Match);

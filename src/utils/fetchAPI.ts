@@ -7,7 +7,7 @@ export default async function fetchAPI<T>(url: string) {
   const data = (await response.json()) as T;
   return data;
 }
-class HirezApiError extends Error {
+export class HirezApiError extends Error {
   status: number;
   url: string;
   error: boolean;

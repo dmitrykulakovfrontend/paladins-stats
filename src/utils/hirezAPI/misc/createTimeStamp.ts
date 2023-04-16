@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 /**
  * Creates a time stamp
  *
@@ -5,5 +7,6 @@
  *
  */
 export default function createTimeStamp() {
-  return new Date().toISOString().slice(0, -5).replace(/[-T:]/g, "");
+  return DateTime.now().toFormat("yyyyMMddHHmmss");
+  // return new Date().toISOString().slice(0, -5).replace(/[-T:]/g, "");
 }

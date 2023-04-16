@@ -1,12 +1,12 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { env } from "~/env.mjs";
 import { Methods, API_ENDPOINT } from "~/constants";
-import createSignature from "~/utils/createSignature";
-import createTimeStamp from "~/utils/createTimeStamp";
+import createSignature from "~/utils/hirezAPI/misc/createSignature";
+import createTimeStamp from "~/utils/hirezAPI/misc/createTimeStamp";
 import fetchAPI from "~/utils/fetchAPI";
-import validateSession from "~/utils/validateSession";
+import validateSession from "~/utils/hirezAPI/validateSession";
 import { z } from "zod";
-import { type GetMatchDetailsBatch } from "../../../types/apiResponses";
+import { type GetMatchDetailsBatchResponse } from "../../../types/apiResponses";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +25,7 @@ export default async function handler(
   }
 
   const url = `${API_ENDPOINT}/${Methods.GET_PLAYER}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/${id}`;
-  const data = await fetchAPI<GetMatchDetailsBatch>(url);
+  const data = await fetchAPI<GetMatchDetailsBatchResponse>(url);
 
   res.status(200).json(data);
 }

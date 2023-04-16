@@ -1,9 +1,9 @@
-export type CreateSessionRes = {
+export type CreateSessionResponse = {
   ret_msg: string;
   session_id: string;
   timestamp: string;
 };
-export type GetDataUsedRes = [
+export type GetDataUsedResponse = [
   {
     Active_Sessions: number;
     Concurrent_Sessions: number;
@@ -15,14 +15,14 @@ export type GetDataUsedRes = [
     ret_msg: string;
   }
 ];
-export type GetMatchIdsByQueue = {
+export type GetMatchIdsByQueueResponse = {
   Active_Flag: string;
   Entry_Datetime: string;
   Match: string;
   Region: string;
   ret_msg: null | string;
 }[];
-export type GetMatchDetailsBatch = Player[];
+export type GetMatchDetailsBatchResponse = Player[];
 
 export type Player = {
   Account_Level: number;

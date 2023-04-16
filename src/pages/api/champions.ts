@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { API_ENDPOINT } from "~/constants";
 import { env } from "~/env.mjs";
-import validateSession from "~/utils/validateSession";
+import validateSession from "~/utils/hirezAPI/validateSession";
 import { Methods } from "~/constants";
-import createSignature from "../../utils/createSignature";
-import createTimeStamp from "../../utils/createTimeStamp";
-import { type GetDataUsedRes } from "~/types/apiResponses";
+import createSignature from "../../utils/hirezAPI/misc/createSignature";
+import createTimeStamp from "../../utils/hirezAPI/misc/createTimeStamp";
+import { type GetDataUsedResponse } from "~/types/apiResponses";
 import fetchAPI from "~/utils/fetchAPI";
 
 export default async function handler(
@@ -17,7 +17,7 @@ export default async function handler(
   const sessionID = await validateSession(req, res);
 
   const url = `${API_ENDPOINT}/${Methods.GET_CHAMPIONS}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/1`;
-  const data = await fetchAPI<GetDataUsedRes>(url);
+  const data = await fetchAPI<GetDataUsedResponse>(url);
   console.log(url);
 
   res.setHeader("Access-Control-Allow-Origin", "*");

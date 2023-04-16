@@ -1,12 +1,12 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { env } from "~/env.mjs";
 import { Methods, API_ENDPOINT, Queues } from "~/constants";
-import createSignature from "~/utils/createSignature";
-import createTimeStamp from "~/utils/createTimeStamp";
+import createSignature from "~/utils/hirezAPI/misc/createSignature";
+import createTimeStamp from "~/utils/hirezAPI/misc/createTimeStamp";
 import fetchAPI from "~/utils/fetchAPI";
-import validateSession from "~/utils/validateSession";
+import validateSession from "~/utils/hirezAPI/validateSession";
 import { testSchema } from "../../utils/schemas/test";
-import { type GetMatchIdsByQueue } from "~/types/apiResponses";
+import { type GetMatchIdsByQueueResponse } from "~/types/apiResponses";
 import { db } from "../../server/db";
 
 export default async function handler(
@@ -25,7 +25,9 @@ export default async function handler(
   const days = [];
   // for (let hour = 0; hour <= 23; hour++) {
   for (let hour = 0; hour <= 1; hour++) {
-    days.push(fetchAPI<GetMatchIdsByQueue>(`${urlMatchQueueIds}/${hour}`));
+    days.push(
+      fetchAPI<GetMatchIdsByQueueResponse>(`${urlMatchQueueIds}/${hour}`)
+    );
   }
   const daysResults = await Promise.all(days);
   const data: { match_id: number; date: Date; region: string }[] = [];

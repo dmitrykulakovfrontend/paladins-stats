@@ -13,12 +13,6 @@ type ProvidedOptions = {
   wholeDay?: boolean;
 };
 
-type DefaultOptions = {
-  date: DateTime;
-  hour?: number;
-  wholeDay?: boolean;
-};
-
 /**
  * Function that gives an array of matches with basic information such as id, region and time.
  * Requires hirez session id and you can configure it with an optional object with options.
@@ -30,14 +24,9 @@ type DefaultOptions = {
  */
 export default async function getMatchIdsByQueue(
   sessionID: string,
-  options: ProvidedOptions
+  options: ProvidedOptions = {}
 ) {
-  const defaultOptions: DefaultOptions = {
-    date: DateTime.now().minus({ day: 1 }),
-    wholeDay: true,
-  };
-  const actualOptions = { ...defaultOptions, ...options };
-  const { date, wholeDay, hour } = actualOptions;
+  if (!options.date) options.date = DateTime.now().minus({ day: 1 });
   const signature = createSignature(Methods.GET_MATCH_IDS_BY_QUEUE);
   const timestamp = createTimeStamp();
 
@@ -45,10 +34,16 @@ export default async function getMatchIdsByQueue(
     Methods.GET_MATCH_IDS_BY_QUEUE
   }json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/${
     Queues.COMPETITIVE_KBM
-  }/${date.toFormat("yyyyMMdd")}`;
+  }/${options.date.toFormat("yyyyMMdd")}`;
 
+  if (options.wholeDay && options.hour) {
+    return new Error("wholeDay and hour are exclusive");
+  }
+  if (!options.wholeDay && !options.hour) {
+    options.wholeDay = true;
+  }
   let data;
-  if (wholeDay) {
+  if (options.wholeDay) {
     // fetch all 24 hours
     const promises: Promise<GetMatchIdsByQueueResponse | HirezApiError>[] = [];
     for (let hour = 0; hour <= 23; hour++) {
@@ -58,10 +53,10 @@ export default async function getMatchIdsByQueue(
     }
     const responses = await Promise.all(promises);
     data = responses.flat() as GetMatchIdsByQueueResponse;
-  } else if (hour) {
+  } else if (options.hour) {
     // fetch specified hour
     data = await fetchAPI<GetMatchIdsByQueueResponse>(
-      `${urlMatchQueueIds}/${hour}`
+      `${urlMatchQueueIds}/${options.hour}`
     );
   }
   return data;

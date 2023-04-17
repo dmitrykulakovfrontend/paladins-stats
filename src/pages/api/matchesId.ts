@@ -10,6 +10,7 @@ import fetchAPI from "~/utils/fetchAPI";
 import { type GetMatchIdsByQueueResponse } from "../../types/apiResponses";
 import getMatchIdsByQueue from "~/utils/hirezAPI/getMatchIdsByQueue";
 import { DateTime } from "luxon";
+import { info } from "~/utils/logging";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,10 +19,10 @@ export default async function handler(
   const sessionID = await validateSession(req, res);
   const matches = await getMatchIdsByQueue(sessionID, {
     hour: 8,
-    wholeDay: true,
+    wholeDay: false,
   });
   if (matches instanceof Error) return res.status(503).json(matches);
-  console.log(matches);
+  info(matches);
   // const matchIds = matches.slice(0, 10).map((obj) => obj.Match);
 
   // const signatureBatch = createSignature(Methods.GET_MATCH_DETAILS_BATCH);

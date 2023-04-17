@@ -7,15 +7,17 @@ import createTimeStamp from "./misc/createTimeStamp";
 import validateSession from "./validateSession";
 import { DateTime } from "luxon";
 
-type Options =
-  | {
-      date?: DateTime;
-      hour: number;
-    }
-  | {
-      date?: DateTime;
-      wholeDay: boolean;
-    };
+type ProvidedOptions = {
+  date?: DateTime;
+  hour?: number;
+  wholeDay?: boolean;
+};
+
+type DefaultOptions = {
+  date: DateTime;
+  hour?: number;
+  wholeDay?: boolean;
+};
 
 /**
  * Function that gives an array of matches with basic information such as id, region and time.
@@ -28,13 +30,14 @@ type Options =
  */
 export default async function getMatchIdsByQueue(
   sessionID: string,
-  options: Options
+  options: ProvidedOptions
 ) {
-  options = {
-    date: options.date || DateTime.now().minus({ day: 1 }),
-    wholeDay: options.wholeDay || true,
+  const defaultOptions: DefaultOptions = {
+    date: DateTime.now().minus({ day: 1 }),
+    wholeDay: true,
   };
-  const { date, wholeDay, hour } = options;
+  const actualOptions = { ...defaultOptions, ...options };
+  const { date, wholeDay, hour } = actualOptions;
   const signature = createSignature(Methods.GET_MATCH_IDS_BY_QUEUE);
   const timestamp = createTimeStamp();
 
@@ -42,7 +45,7 @@ export default async function getMatchIdsByQueue(
     Methods.GET_MATCH_IDS_BY_QUEUE
   }json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/${
     Queues.COMPETITIVE_KBM
-  }/${date.toFormat("yyyyMMdd")}/`;
+  }/${date.toFormat("yyyyMMdd")}`;
 
   let data;
   if (wholeDay) {

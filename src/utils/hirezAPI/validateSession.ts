@@ -7,6 +7,7 @@ import createSignature from "./misc/createSignature";
 import { Methods } from "~/constants";
 import createTimeStamp from "./misc/createTimeStamp";
 import fetchAPI from "../fetchAPI";
+import { info, warning } from "../logging";
 
 export default async function validateSession(
   req: NextApiRequest,
@@ -20,7 +21,7 @@ export default async function validateSession(
     res,
   });
   if (!session) {
-    console.log("Creating session cookie...");
+    warning("Creating session cookie...");
     const data = await fetchAPI<CreateSessionResponse>(
       `${API_ENDPOINT}/createsessionjson/${env.DEV_ID}/${signature}/${timestamp}`
     );
@@ -33,7 +34,7 @@ export default async function validateSession(
       req,
       res,
     });
-    console.log({ data });
+    info({ data });
     sessionID = data.session_id;
   } else {
     sessionID = session as string;

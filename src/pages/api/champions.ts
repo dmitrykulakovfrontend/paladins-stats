@@ -7,6 +7,7 @@ import createSignature from "../../utils/hirezAPI/misc/createSignature";
 import createTimeStamp from "../../utils/hirezAPI/misc/createTimeStamp";
 import { type GetDataUsedResponse } from "~/types/apiResponses";
 import fetchAPI from "~/utils/fetchAPI";
+import { info } from "~/utils/logging";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,7 +19,7 @@ export default async function handler(
 
   const url = `${API_ENDPOINT}/${Methods.GET_CHAMPIONS}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/1`;
   const data = await fetchAPI<GetDataUsedResponse>(url);
-  console.log(url);
+  info(url);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
 

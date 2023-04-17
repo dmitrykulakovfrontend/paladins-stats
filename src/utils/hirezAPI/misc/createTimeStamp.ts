@@ -7,6 +7,6 @@ import { DateTime } from "luxon";
  *
  */
 export default function createTimeStamp() {
-  return DateTime.now().toFormat("yyyyMMddHHmmss");
+  return DateTime.now().toUTC().toFormat("yyyyMMddHHmmss");
   // return new Date().toISOString().slice(0, -5).replace(/[-T:]/g, "");
 }

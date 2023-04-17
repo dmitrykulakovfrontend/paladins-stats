@@ -58,6 +58,8 @@ export default async function getMatchIdsByQueue(
     data = await fetchAPI<GetMatchIdsByQueueResponse>(
       `${urlMatchQueueIds}/${options.hour}`
     );
+  } else {
+    return new Error("Something went wrong");
   }
   return data;
 }

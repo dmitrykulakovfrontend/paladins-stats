@@ -21,15 +21,17 @@ export default withErrorHandler(async function handler(
     region: match.Region,
   }));
   const oldDateDay = DateTime.now().minus({ day: 8 }).toFormat("yyyy-MM-dd");
-  await db
-    .deleteFrom("matches")
-    .where("date", "like", `%${oldDateDay}%`)
-    .executeTakeFirstOrThrow();
+  await db.transaction().execute(async (trx) => {
+    await trx
+      .deleteFrom("matches")
+      .where("date", "like", `%${oldDateDay}%`)
+      .executeTakeFirstOrThrow();
 
-  await db
-    .insertInto("matches")
-    .values(formattedNewMatches)
-    .executeTakeFirstOrThrow();
+    await trx
+      .insertInto("matches")
+      .values(formattedNewMatches)
+      .executeTakeFirstOrThrow();
+  });
 
   // const matchIds = matches.slice(0, 10).map((obj) => obj.Match);
 

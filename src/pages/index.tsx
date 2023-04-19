@@ -1,7 +1,5 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Bars3Icon } from "@heroicons/react/24/solid";
-import Header from "~/common/components/Header";
 const Home: NextPage = () => {
   return (
     <>

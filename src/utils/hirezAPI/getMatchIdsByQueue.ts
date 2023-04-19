@@ -4,7 +4,6 @@ import { type GetMatchIdsByQueueResponse } from "~/types/apiResponses";
 import fetchAPI, { type HirezApiError } from "../fetchAPI";
 import createSignature from "./misc/createSignature";
 import createTimeStamp from "./misc/createTimeStamp";
-import validateSession from "./validateSession";
 import { DateTime } from "luxon";
 
 type ProvidedOptions = {
@@ -37,7 +36,7 @@ export default async function getMatchIdsByQueue(
   }/${options.date.toFormat("yyyyMMdd")}`;
 
   if (options.wholeDay && options.hour) {
-    return new Error("wholeDay and hour are exclusive");
+    throw new Error("wholeDay and hour are exclusive");
   }
   if (!options.wholeDay && !options.hour) {
     options.wholeDay = true;
@@ -59,7 +58,7 @@ export default async function getMatchIdsByQueue(
       `${urlMatchQueueIds}/${options.hour}`
     );
   } else {
-    return new Error("Something went wrong");
+    throw new Error("Something went wrong");
   }
   return data;
 }

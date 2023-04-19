@@ -5,7 +5,6 @@ import createSignature from "~/utils/hirezAPI/misc/createSignature";
 import createTimeStamp from "~/utils/hirezAPI/misc/createTimeStamp";
 import fetchAPI from "~/utils/fetchAPI";
 import validateSession from "~/utils/hirezAPI/validateSession";
-import { z } from "zod";
 import { type GetMatchDetailsBatchResponse } from "../../../types/apiResponses";
 
 export default async function handler(

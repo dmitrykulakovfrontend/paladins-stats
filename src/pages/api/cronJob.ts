@@ -1,30 +1,35 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getMatchIdsByQueue from "~/utils/hirezAPI/getMatchIdsByQueue";
 import validateSession from "~/utils/hirezAPI/validateSession";
-import { info } from "~/utils/logging";
 import withErrorHandler from "../../utils/errorHandler";
-import { HirezApiError } from "~/utils/fetchAPI";
+import { db } from "~/server/db";
+import { DateTime } from "luxon";
 
 export default withErrorHandler(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const sessionID = await validateSession(req, res);
-  const matches = await getMatchIdsByQueue(sessionID, { hour: 16 });
-  if (matches instanceof Error) return res.status(503).json(matches);
+  const newMatches = await getMatchIdsByQueue(sessionID, {
+    wholeDay: true,
+    date: DateTime.now().minus({ day: 1 }),
+  });
 
-  const formattedMatches = matches.map((match) => ({
+  const formattedNewMatches = newMatches.map((match) => ({
     match_id: +match.Match,
     date: new Date(match.Entry_Datetime),
     region: match.Region,
   }));
-  info(formattedMatches);
-  throw new HirezApiError(404, "Random error", "link");
-  // try {
-  //   await db.insertInto("matches").values(data).executeTakeFirstOrThrow();
-  // } catch (error) {
-  //   return res.status(503).json(error);
-  // }
+  const oldDateDay = DateTime.now().minus({ day: 8 }).toFormat("yyyy-MM-dd");
+  await db
+    .deleteFrom("matches")
+    .where("date", "like", `%${oldDateDay}%`)
+    .executeTakeFirstOrThrow();
+
+  await db
+    .insertInto("matches")
+    .values(formattedNewMatches)
+    .executeTakeFirstOrThrow();
 
   // const matchIds = matches.slice(0, 10).map((obj) => obj.Match);
 
@@ -35,5 +40,5 @@ export default withErrorHandler(async function handler(
   // }/${signatureBatch}/${sessionID}/${timestampBatch}/${matchIds.join(",")}`;
   // console.log(url);
   // const data = await fetchAPI<GetMatchIdsByQueueResponse>(url);
-  res.status(200).json(formattedMatches);
+  res.status(200).json(formattedNewMatches);
 });

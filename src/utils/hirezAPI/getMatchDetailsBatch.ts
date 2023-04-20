@@ -6,13 +6,12 @@ import createSignature from "./misc/createSignature";
 import createTimeStamp from "./misc/createTimeStamp";
 
 /**
- * Function that gives an array of matches with basic information such as id, region and time.
- * Requires hirez session id and you can configure it with an optional object with options.
+ * Function that gives detailed information about match ids, recommended maximum of 10 ids.
+ * Requires hirez session id and array with ids as strings.
  *
- * By default takes full yesterday data.
  *
  * @param {string} sessionID - The hirez session id.
- * @param {Object} [options] - An optional object that can be used to configure the function.
+ * @param {Array} ids - Array with ids as strings.
  */
 export default async function getMatchDetailsBatch(
   sessionID: string,

@@ -15,16 +15,24 @@ export default async function calculateChampsAverage(
   while (ids.length) {
     chunks.push(ids.splice(0, 10).filter((id) => id));
   }
-  const promises = chunks.map((chunk) => {
-    return getMatchDetailsBatch(sessionID, chunk);
-  });
+  // iterate through chunks where they are grouped by 10 at a time and Promise.all them
+  const results = [];
+  while (chunks.length) {
+    const promises = chunks.splice(0, 20).map((chunk) => {
+      return getMatchDetailsBatch(sessionID, chunk);
+    });
+    const result = await Promise.all(promises);
+    results.push(result);
+  }
+  info(results);
+
+  // const promises = chunks.map((chunk) => {
+  //   return getMatchDetailsBatch(sessionID, chunk);
+  // });
 
   // get default champions info and players from all promises
-  const [champions, ...playersChunks] = await Promise.all([
-    getChampions(sessionID),
-    ...promises,
-  ]);
-  const players = playersChunks.flat();
+  const champions = await getChampions(sessionID);
+  const players = results.flat(2);
 
   // split players by matches
   const matches: {
@@ -55,6 +63,10 @@ export default async function calculateChampsAverage(
     (match) => (match.averageRanked = Math.round((match.averageRanked /= 10)))
   );
 
+  const matchesAmount = matches.length;
+
+  info(matches.length);
+
   type AdditionalInfo = {
     loses: number;
     wins: number;
@@ -68,6 +80,8 @@ export default async function calculateChampsAverage(
       loses: 0,
       wins: 0,
       timesPicked: 0,
+      pickrate: -1,
+      winrate: -1,
       tiers: {} as { [tier: number]: AdditionalInfo },
     };
   });
@@ -100,6 +114,14 @@ export default async function calculateChampsAverage(
       }
     });
   });
+  // calculate champion pickrate and winrate
+  updatedChampions.forEach((champion) => {
+    const pickrate = (champion.timesPicked / matchesAmount) * 100;
+    const winrate = (champion.wins / (champion.wins + champion.loses)) * 100;
+    champion.pickrate = Math.round(pickrate);
+    champion.winrate = Math.round(winrate);
+  });
+
   return updatedChampions
     .filter(({ timesPicked }) => timesPicked > 0)
     .sort(

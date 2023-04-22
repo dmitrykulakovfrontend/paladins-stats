@@ -24,7 +24,7 @@ const withErrorHandler =
             {}
           ),
       });
-      res.status(500).json(e);
+      res.status(status).json({ name, message, url, status });
     }
   };
 

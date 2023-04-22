@@ -7,8 +7,9 @@ import createSignature from "../../utils/hirezAPI/misc/createSignature";
 import createTimeStamp from "../../utils/hirezAPI/misc/createTimeStamp";
 import { type GetDataUsedResponse } from "~/types/apiResponses";
 import fetchAPI from "~/utils/fetchAPI";
+import withErrorHandler from "~/utils/errorHandler";
 
-export default async function handler(
+export default withErrorHandler(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -19,4 +20,4 @@ export default async function handler(
   const url = `${API_ENDPOINT}/${Methods.GET_DATA_USED}json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}`;
   const data = await fetchAPI<GetDataUsedResponse>(url);
   res.status(200).json(data);
-}
+});

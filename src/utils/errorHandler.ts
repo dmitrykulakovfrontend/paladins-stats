@@ -29,10 +29,9 @@ const withErrorHandler =
         res.status(status).json({ name, message, url, status });
       } else if (e instanceof DatabaseError) {
         const { name, message, stack, status } = e;
-        const shortMessage = message.replace(/\(:vtg1.+\)/g, "({REDACTED})");
         error({
           name,
-          message: shortMessage,
+          message,
           status,
           stack: stack
             ?.split("\n")

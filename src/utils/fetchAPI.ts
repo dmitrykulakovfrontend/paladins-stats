@@ -4,7 +4,6 @@ export default async function fetchAPI<T extends object>(url: string) {
     throw new HirezApiError(response.status, response.statusText, url);
   }
   const data = (await response.json()) as T;
-  console.log(Array.isArray(data));
   if ("ret_msg" in data && data.ret_msg !== "Approved") {
     throw new HirezApiError(response.status, data.ret_msg as string, url);
   }

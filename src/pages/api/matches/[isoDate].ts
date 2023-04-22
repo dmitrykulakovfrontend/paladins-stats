@@ -26,7 +26,7 @@ export default withErrorHandler(async function handler(
   }));
 
   await db
-    .insertInto("matches")
+    .replaceInto("matches")
     .values(formattedMatches)
     .executeTakeFirstOrThrow();
 

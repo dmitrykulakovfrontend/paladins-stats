@@ -33,7 +33,7 @@ export default async function getMatchIdsByQueue(
     Methods.GET_MATCH_IDS_BY_QUEUE
   }json/${env.DEV_ID}/${signature}/${sessionID}/${timestamp}/${
     Queues.COMPETITIVE_KBM
-  }/${options.date.toFormat("yyyyMMdd")}`;
+  }/${options.date.setZone("UTC+0").toFormat("yyyyMMdd")}`;
 
   if (options.wholeDay && options.hour) {
     throw new Error("wholeDay and hour are exclusive");

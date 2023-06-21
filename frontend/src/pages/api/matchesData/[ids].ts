@@ -16,17 +16,18 @@ export default withErrorHandler(async function handler(
     throw new Error(`No specified ids`);
   }
 
-  // const matchesFromDB = await db
-  //   .selectFrom("matches")
-  //   .select("match_id")
-  //   .where("date", "like", "%2023-04-20%")
-  //   .execute();
+  const matchesFromDB = await db
+    .selectFrom("matches")
+    .select("match_id")
+    .where("date", "like", "%2023-04-21%")
+    .execute();
   // transform matches id into array strings
-  // const matchesIds = matchesFromDB.map((match) => String(match.match_id));
+  const matchesIds = matchesFromDB.map((match) => String(match.match_id));
+
   // const champions = await calculateChampsAverage(sessionID, matchesIds);
 
   const players = [];
-  const matchesIds = ids.split(",");
+  // const matchesIds = ids.split(",");
 
   // split ids into chunks of 10 ids each to avoid exceeding API limits
   const chunkSize = 10;
@@ -45,10 +46,10 @@ export default withErrorHandler(async function handler(
     idsChunks.push(idChunk);
   }
 
-  // split api requests into chunks of 20 to avoid exceeding time outs
+  // split api requests into chunks of 20 to avoid getting time out
   let promises: Promise<GetMatchDetailsBatchResponse>[] = [];
-  const apiRequestsAtOnce = 20;
-
+  const apiRequestsAtOnce = 100;
+  console.time("fetch2");
   for (const idsChunk of idsChunks) {
     if (promises.length < apiRequestsAtOnce) {
       promises.push(getMatchDetailsBatch(sessionID, idsChunk));
@@ -62,11 +63,13 @@ export default withErrorHandler(async function handler(
     const matchesChunk = await Promise.all(promises);
     players.push(...matchesChunk.flat());
   }
+  console.timeEnd("fetch2");
 
   //  calculate match tier for each match
   const matches: { match: GetMatchDetailsBatchResponse; matchTier: number }[] =
     [];
   let match = [];
+  console.log(matches);
   let matchTier = 0;
 
   for (const [i, player] of players.entries()) {
@@ -159,5 +162,6 @@ export default withErrorHandler(async function handler(
       matchTier,
     });
   }
+  // res.status(200).json(1);
   res.status(200).json({ playersMatchData, matchesData });
 });

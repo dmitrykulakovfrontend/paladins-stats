@@ -13,12 +13,16 @@ const inter = Inter({
 });
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <main
-      className={`${montserrat.variable} ${inter.variable} font-montserrat`}
-    >
+    <div className={`${montserrat.variable} ${inter.variable} font-montserrat `}>
       <Header />
-      <Component {...pageProps} />
-    </main>
+        <main
+        className={`max-w-[1100px]  mx-auto min-h-screen pt-20`}
+      >
+        
+        <Component {...pageProps} />
+      
+      </main>
+    </div>
   );
 };
 

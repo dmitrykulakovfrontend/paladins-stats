@@ -6,12 +6,6 @@ import { z } from "zod";
  */
 const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
-  DEV_ID: z.string(),
-  AUTH_KEY: z.string(),
-
-  DATABASE_HOST: z.string(),
-  DATABASE_USERNAME: z.string(),
-  DATABASE_PASSWORD: z.string(),
 });
 
 /**
@@ -30,13 +24,7 @@ const client = z.object({
  */
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
-  DEV_ID: process.env.DEV_ID,
-  AUTH_KEY: process.env.AUTH_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
-
-  DATABASE_HOST: process.env.DATABASE_HOST,
-  DATABASE_USERNAME: process.env.DATABASE_USERNAME,
-  DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
 };
 
 // Don't touch the part below

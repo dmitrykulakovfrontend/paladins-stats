@@ -1,5 +1,6 @@
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import TextInput from "./TextInput";
 
 type MenuProps = {
   handleCloseMenu: () => void;
@@ -54,17 +55,9 @@ function Menu({ handleCloseMenu, isActive }: MenuProps) {
             </Link>
           </li>
         </ul>
-        <div className="relative mt-auto px-4 py-6 lg:mx-auto lg:p-0">
-          <input
-            type="search"
-            placeholder="Find players by username"
-            className="w-full rounded-md bg-black p-2 font-inter text-sm text-white/70 outline-none focus-visible:ring-2  focus-visible:ring-sky-300"
-          />
-          <MagnifyingGlassIcon
-            className="absolute right-8 top-1/2 -translate-y-1/2 lg:right-2"
-            width={20}
-            color="white"
-          />
+        <div className="mx-auto w-full max-w-xs max-lg:ml-6">
+          <TextInput
+            placeholder="Find players by username" className="p-2" type="search" Icon={MagnifyingGlassIcon}  />
         </div>
       </div>
     </>

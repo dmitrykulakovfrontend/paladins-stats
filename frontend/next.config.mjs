@@ -20,5 +20,14 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.overbuff.com",
+        // pathname: '/account123/**',
+      },
+    ],
+  },
 };
 export default config;

@@ -1,6 +1,10 @@
 import axios from "axios";
+import { Methods } from "~/types/apiResponses.js";
 
-export default async function fetchAPI<Type extends object>(url: string) {
+// fetchAPI("getmatchinfo")
+// fetchAPI("url/to/api")
+
+export default async function fetchAPI<Type extends object>(method: string | Methods) {
   const response = await axios.get<Type>(url);
   if (response.status !== 200) {
     throw new HirezApiError(response.status, response.statusText, url);

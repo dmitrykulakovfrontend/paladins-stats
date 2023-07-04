@@ -3,6 +3,23 @@ export type CreateSessionResponse = {
   session_id: string;
   timestamp: string;
 };
+
+export enum Methods {
+  CREATE_SESSION = "createsession",
+  GET_DATA_USED = "getdataused",
+  GET_MATCH_IDS_BY_QUEUE = "getmatchidsbyqueue",
+  GET_MATCH_DETAILS_BATCH = "getmatchdetailsbatch",
+  GET_CHAMPIONS = "getchampions",
+  GET_PLAYER = "getplayer",
+  GET_PLAYER_HISTORY = "getmatchhistory",
+}
+
+export enum Queues {
+  SIEGE = "424",
+  COMPETITIVE_KBM = "486",
+  COMPETITIVE_GAMEPAD = "428",
+}
+
 export type GetDataUsedResponse = [
   {
     Active_Sessions: number;

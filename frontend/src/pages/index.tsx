@@ -3,73 +3,71 @@ import Head from "next/head";
 import Image from "next/image";
 import TextInput from "~/common/components/TextInput";
 import Button from "~/common/components/Button";
-import Table from "~/common/components/Table"
+import Table, { HorizontalBar } from "~/common/components/Table"
 
-
+const name = <div className="flex"><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</div>
 
 const Home: NextPage = () => {
   
   const roles = [{
     type: "Damage",
     champions: [{
-      name: <><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</>,
+      name: name,
+      pickRate: "13%",
       winRate: "57%",
-      pickRate: "13%"
     },
     {
-      name: <><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</>,
+      name: name,
+      pickRate: "7%",
       winRate: "42%",
-      pickRate: "7%"
     },
     {
-      name: <><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</>,
+      name: name,
+      pickRate: "14%",
       winRate: "56%",
-      pickRate: "14%"
     }]
   },{
     type: "Support",
     champions: [{
-      name: <><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</>,
+      name: name,
+      pickRate: "13%",
       winRate: "57%",
-      pickRate: "13%"
       
     },
     {
-      name: <><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</>,
+      name: name,
+      pickRate: "7%",
       winRate: "42%",
-      pickRate: "7%"
     },
     {
-      name: <><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</>,
+      name: name,
+      pickRate: "14%",
       winRate: "56%",
-      pickRate: "14%"
     }]
     }].map(role => {
       const maxWinRate = role.champions.reduce((acc, curr) => {
-        if (+curr.winRate > acc) {
-          return +curr.winRate
+        const winrate = parseInt(curr.winRate)
+        if (winrate > acc) {
+          return winrate
         } else {
           return acc
         }
       },0)
       const maxPickRate = role.champions.reduce((acc, curr) => {
-        if (+curr.pickRate > acc) {
-          return +curr.pickRate
+        const pickRate = parseInt(curr.pickRate)
+        if (pickRate > acc) {
+          return pickRate
         } else {
           return acc
         }
       }, 0)
       const newChampions = role.champions.map(champion => {
+        console.log(champion.winRate)
+        console.log(parseInt(champion.winRate))
         return {
           ...champion,
-          winRate: {
-            value: champion.winRate,
-            bar: (+champion.winRate / maxWinRate) * 100,
-          },
-          pickRate: {
-            value: champion.pickRate,
-            bar: (+champion.pickRate / maxPickRate) * 100,
-          }
+          pickRate: (<div>{champion.pickRate }<HorizontalBar value={(parseInt(champion.pickRate) / maxPickRate) * 100} /></div>),
+          winRate: (<div>{champion.winRate }<HorizontalBar color={"secondary"} value={(parseInt(champion.winRate) / maxWinRate) * 100} /></div>),
         }
       })
       return {
@@ -78,8 +76,8 @@ const Home: NextPage = () => {
       }
   })
 
-  
-const headers = ["Champion", "Win Rate", "Pick Rate"]
+  console.log(roles)
+  const headers = ["Champion","Pick Rate", "Win Rate"]
   return (
     <>
       <Head>
@@ -198,9 +196,23 @@ const headers = ["Champion", "Win Rate", "Pick Rate"]
         >
           Sign in with Battle.net to see your stats!
         </Button>
-        <Table data={roles[0]!.champions} headers={headers} />
-        <Table data={roles[1]!.champions} headers={headers} />
-        <Table data={roles[1]!.champions} headers={headers} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Table
+            data={roles[0]!.champions}
+            title="Top Damage Heroes"
+            headers={headers}
+          />
+          <Table
+            data={roles[1]!.champions}
+            title="Top Support Heroes"
+            headers={headers}
+          />
+          <Table
+            data={roles[1]!.champions}
+            title="Top Tank Heroes"
+            headers={headers}
+          />
+        </div>
       </div>
     </>
   );

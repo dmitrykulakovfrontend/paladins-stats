@@ -3,81 +3,119 @@ import Head from "next/head";
 import Image from "next/image";
 import TextInput from "~/common/components/TextInput";
 import Button from "~/common/components/Button";
-import Table, { HorizontalBar } from "~/common/components/Table"
+import Table, { HorizontalBar } from "~/common/components/Table";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
-const name = <div className="flex"><Image src="https://www.overbuff.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgenji.af8825d2.png&w=3840&q=100" alt="" width={32} height={32} />Furia</div>
+const name = (
+  <div className="flex items-center gap-2">
+    <Image
+      src="https://webcdn.hirezstudios.com/paladins/champion-icons/strix.jpg"
+      alt=""
+      width={32}
+      className="rounded"
+      height={32}
+    />
+    Strix
+  </div>
+);
 
 const Home: NextPage = () => {
-  
-  const roles = [{
-    type: "Damage",
-    champions: [{
-      name: name,
-      pickRate: "13%",
-      winRate: "57%",
+  const roles = [
+    {
+      type: "Damage",
+      champions: [
+        {
+          name: name,
+          pickRate: "13%",
+          winRate: "57%",
+        },
+        {
+          name: name,
+          pickRate: "7%",
+          winRate: "42%",
+        },
+        {
+          name: name,
+          pickRate: "14%",
+          winRate: "56%",
+        },
+      ],
     },
     {
-      name: name,
-      pickRate: "7%",
-      winRate: "42%",
+      type: "Support",
+      champions: [
+        {
+          name: name,
+          pickRate: "13%",
+          winRate: "57%",
+        },
+        {
+          name: name,
+          pickRate: "7%",
+          winRate: "42%",
+        },
+        {
+          name: name,
+          pickRate: "14%",
+          winRate: "56%",
+        },
+      ],
     },
-    {
-      name: name,
-      pickRate: "14%",
-      winRate: "56%",
-    }]
-  },{
-    type: "Support",
-    champions: [{
-      name: name,
-      pickRate: "13%",
-      winRate: "57%",
-      
-    },
-    {
-      name: name,
-      pickRate: "7%",
-      winRate: "42%",
-    },
-    {
-      name: name,
-      pickRate: "14%",
-      winRate: "56%",
-    }]
-    }].map(role => {
-      const maxWinRate = role.champions.reduce((acc, curr) => {
-        const winrate = parseInt(curr.winRate)
-        if (winrate > acc) {
-          return winrate
-        } else {
-          return acc
-        }
-      },0)
-      const maxPickRate = role.champions.reduce((acc, curr) => {
-        const pickRate = parseInt(curr.pickRate)
-        if (pickRate > acc) {
-          return pickRate
-        } else {
-          return acc
-        }
-      }, 0)
-      const newChampions = role.champions.map(champion => {
-        console.log(champion.winRate)
-        console.log(parseInt(champion.winRate))
-        return {
-          ...champion,
-          pickRate: (<div>{champion.pickRate }<HorizontalBar value={(parseInt(champion.pickRate) / maxPickRate) * 100} /></div>),
-          winRate: (<div>{champion.winRate }<HorizontalBar color={"secondary"} value={(parseInt(champion.winRate) / maxWinRate) * 100} /></div>),
-        }
-      })
-      return {
-        ...role,
-        champions: newChampions
+  ].map((role) => {
+    const maxWinRate = role.champions.reduce((acc, curr) => {
+      const winrate = parseInt(curr.winRate);
+      if (winrate > acc) {
+        return winrate;
+      } else {
+        return acc;
       }
-  })
+    }, 0);
+    const maxPickRate = role.champions.reduce((acc, curr) => {
+      const pickRate = parseInt(curr.pickRate);
+      if (pickRate > acc) {
+        return pickRate;
+      } else {
+        return acc;
+      }
+    }, 0);
+    const newChampions = role.champions.map((champion) => {
+      console.log(champion.winRate);
+      console.log(parseInt(champion.winRate));
+      return {
+        ...champion,
+        pickRate: (
+          <div>
+            {champion.pickRate}
+            <HorizontalBar
+              value={(parseInt(champion.pickRate) / maxPickRate) * 100}
+            />
+          </div>
+        ),
+        winRate: (
+          <div>
+            {champion.winRate}
+            <HorizontalBar
+              color={"secondary"}
+              value={(parseInt(champion.winRate) / maxWinRate) * 100}
+            />
+          </div>
+        ),
+      };
+    });
+    return {
+      ...role,
+      champions: newChampions,
+    };
+  });
 
-  console.log(roles)
-  const headers = ["Champion","Pick Rate", "Win Rate"]
+  console.log(roles);
+  const features = [
+    "All champions",
+    "Custom elo system",
+    "Meta suggestions",
+    "Graphs and charts",
+  ];
+  const headers = ["Champion", "Pick Rate", "Win Rate"];
   return (
     <>
       <Head>
@@ -86,100 +124,22 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="min-h-screen w-full bg-surface-600">
-        <h2 className="font-title rounded-md p-2 text-center text-3xl font-bold uppercase  text-white">
-          Welcome to the new Overbuff!
+        <h2 className="mt-8 rounded-md p-2 text-center font-title text-3xl uppercase  tracking-wide  text-white">
+          Welcome to the Paladins Analyzer!
         </h2>
-
-        <div className="grid grid-cols-2 gap-4 pt-4 md:grid-cols-4">
-          <div className="flex flex-col items-center space-y-2">
-            <div className="inline-flex rounded-full bg-sky-300 p-1 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-3 w-3"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5"
-                ></path>
-              </svg>
-            </div>
-            <div className="text-xs font-bold uppercase text-white md:text-sm">
-              OW 2 Support
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center space-y-2">
-            <div className="inline-flex rounded-full bg-sky-300 p-1 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-3 w-3"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5"
-                ></path>
-              </svg>
-            </div>
-            <div className="text-xs font-bold uppercase text-white md:text-sm">
-              New Heroes
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center space-y-2">
-            <div className="inline-flex rounded-full bg-sky-300 p-1 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-3 w-3"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5"
-                ></path>
-              </svg>
-            </div>
-            <div className="text-xs font-bold uppercase text-white md:text-sm">
-              Added Stats
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center space-y-2">
-            <div className="inline-flex rounded-full bg-sky-300 p-1 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-                className="h-3 w-3"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5"
-                ></path>
-              </svg>
-            </div>
-            <div className="text-xs font-bold uppercase text-white md:text-sm">
-              Improved Rankings
+        <div className="flex flex-col items-center justify-center ">
+          <div className="w-full space-y-2 md:w-[75%]">
+            <div className="grid grid-cols-2 gap-4 pt-4 lg:grid-cols-4">
+              {features.map((feature, i) => (
+                <div key={i} className="flex flex-col items-center space-y-2">
+                  <div className="inline-flex rounded-full bg-sky-300 p-1 text-white">
+                    <CircleIcon />
+                  </div>
+                  <div className="text-xs font-bold uppercase text-white/90 md:text-sm">
+                    {feature}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -189,27 +149,76 @@ const Home: NextPage = () => {
             placeholder="Find player by username"
           />
         </div>
-
         <Button
           href="/"
-          className="mx-auto block w-fit rounded-sm text-base font-semibold"
+          className="mx-auto flex w-fit gap-2 rounded py-2 text-base font-semibold"
         >
+          <UserCircleIcon width={24} color="white" />
           Sign in with Battle.net to see your stats!
         </Button>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
           <Table
             data={roles[0]!.champions}
-            title="Top Damage Heroes"
+            title={{
+              text: "Top Damage Heroes",
+              href: "damage",
+              icon: (
+                <Image
+                  src="/img/rolesIcons/damage.webp"
+                  width={32}
+                  height={32}
+                  alt=""
+                />
+              ),
+            }}
             headers={headers}
           />
           <Table
             data={roles[1]!.champions}
-            title="Top Support Heroes"
+            title={{
+              text: "Top Support Heroes",
+              href: "support",
+              icon: (
+                <Image
+                  src="/img/rolesIcons/support.webp"
+                  width={32}
+                  height={32}
+                  alt=""
+                />
+              ),
+            }}
             headers={headers}
           />
           <Table
             data={roles[1]!.champions}
-            title="Top Tank Heroes"
+            title={{
+              text: "Top Tank Heroes",
+              href: "tank",
+              icon: (
+                <Image
+                  src="/img/rolesIcons/tank.webp"
+                  width={32}
+                  height={32}
+                  alt=""
+                />
+              ),
+            }}
+            headers={headers}
+          />
+          <Table
+            data={roles[1]!.champions}
+            title={{
+              text: "Top Flank Heroes",
+              href: "flank",
+              icon: (
+                <Image
+                  src="/img/rolesIcons/flank.webp"
+                  width={32}
+                  height={32}
+                  alt=""
+                />
+              ),
+            }}
             headers={headers}
           />
         </div>
@@ -217,5 +226,25 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+export function CircleIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="6"
+      stroke="currentColor"
+      aria-hidden="true"
+      className="h-3 w-3"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M4.5 12.75l6 6 9-13.5"
+      ></path>
+    </svg>
+  );
+}
 
 export default Home;

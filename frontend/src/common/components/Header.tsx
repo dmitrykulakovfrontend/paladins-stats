@@ -15,7 +15,7 @@ function Header() {
         className="lg:hidden"
         onClick={() => setMenuActive((prev) => !prev)}
       />
-      <Button href="/" className="font-bold uppercase"><h1>Bugladins</h1></Button> 
+      <Button href="/" className="font-bold uppercase text-base"><h1>Paladins Analyzer</h1></Button> 
       <Menu
         handleCloseMenu={() => setMenuActive(false)}
         isActive={isMenuActive}

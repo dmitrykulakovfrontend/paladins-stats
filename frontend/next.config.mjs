@@ -24,7 +24,7 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "www.overbuff.com",
+        hostname: "webcdn.hirezstudios.com",
         // pathname: '/account123/**',
       },
     ],

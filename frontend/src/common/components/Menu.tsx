@@ -55,9 +55,13 @@ function Menu({ handleCloseMenu, isActive }: MenuProps) {
             </Link>
           </li>
         </ul>
-        <div className="mx-auto w-full max-w-xs max-lg:ml-6">
+        <div className="mx-auto my-auto w-full max-w-[250px] max-lg:mt-auto max-lg:mb-6 max-lg:max-w-full max-lg:px-6">
           <TextInput
-            placeholder="Find players by username" className="p-2" type="search" Icon={MagnifyingGlassIcon}  />
+            placeholder="Find players by username"
+            className="p-2"
+            type="search"
+            Icon={MagnifyingGlassIcon}
+          />
         </div>
       </div>
     </>

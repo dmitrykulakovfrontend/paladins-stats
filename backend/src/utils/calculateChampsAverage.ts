@@ -1,7 +1,7 @@
-import { type Player } from "~/types/apiResponses";
-import getChampions from "./utils/hirezAPI/getChampions.js";
-import getMatchDetailsBatch from "./utils/hirezAPI/getMatchDetailsBatch.js";
-import { info } from "./utils/logging.js";
+import { type Player } from "../types/apiResponses.js";
+import getChampions from "./hirezAPI/getChampions.js";
+import getMatchDetailsBatch from "./hirezAPI/getMatchDetailsBatch.js";
+import { info } from "./logging.js";
 
 export default async function calculateChampsAverage(
   sessionID: string,
@@ -24,7 +24,6 @@ export default async function calculateChampsAverage(
     const result = await Promise.all(promises);
     results.push(result);
   }
-  info(results);
 
   // const promises = chunks.map((chunk) => {
   //   return getMatchDetailsBatch(sessionID, chunk);
@@ -76,12 +75,14 @@ export default async function calculateChampsAverage(
   // each champions get initial additional information
   const updatedChampions = champions.map((champion) => {
     return {
-      ...champion,
+      id: champion.id,
+      name: champion.Name,
+      icon: champion.ChampionIcon_URL,
       loses: 0,
       wins: 0,
       timesPicked: 0,
-      pickrate: -1,
-      winrate: -1,
+      pickrate: 0,
+      winrate: 0,
       tiers: {} as { [tier: number]: AdditionalInfo },
     };
   });
@@ -114,9 +115,29 @@ export default async function calculateChampsAverage(
       }
     });
   });
+  //calculate total number of matches in that hour
+
+  
+
+  console.log({matchesAmount})
   // calculate champion pickrate and winrate
   updatedChampions.forEach((champion) => {
-    const pickrate = (champion.timesPicked / matchesAmount) * 100;
+    console.log({picked: champion.timesPicked})
+  // Step 2: Calculate the specific champion's pickrate
+  const specificChampionPickrate = champion.timesPicked / matchesAmount;
+    console.log({specificChampionPickrate});
+  // Step 3: Calculate the total times picked for all other champions
+  const otherChampionsTimesPicked = (matchesAmount * 10) - champion.timesPicked
+    console.log({otherChampionsTimesPicked});
+  // Step 4: Calculate the average pickrate of all other champions
+  const averagePickrate = otherChampionsTimesPicked / matchesAmount;
+    console.log({averagePickrate});
+  // Step 5: Calculate the relative pickrate
+    const relativePickrate = specificChampionPickrate / averagePickrate;
+    
+    console.log(`relativePickrate:`, {relativePickrate});
+
+    const pickrate = relativePickrate;
     const winrate = (champion.wins / (champion.wins + champion.loses)) * 100;
     champion.pickrate = Math.round(pickrate);
     champion.winrate = Math.round(winrate);

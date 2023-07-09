@@ -16,7 +16,7 @@ import getMatchDetailsBatch from "./utils/hirezAPI/getMatchDetailsBatch.js";
 import cors from "cors";
 
 const app: Application = express();
-const port = 5000;
+const port = 5001;
 // Use Morgan with the Chalk-formatted output
 app.use(logger);
 app.use(cors({ origin: "*" }));

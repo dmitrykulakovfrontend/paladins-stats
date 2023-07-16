@@ -33,6 +33,7 @@ router.get(
       id: champion.id,
       name: champion.name,
       icon: champion.icon,
+      role: champion.role,
       pickrate: champion.pickrate,
       winrate: champion.winrate,
     }))

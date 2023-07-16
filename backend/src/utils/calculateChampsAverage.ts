@@ -83,6 +83,7 @@ export default async function calculateChampsAverage(
       timesPicked: 0,
       pickrate: 0,
       winrate: 0,
+      role: champion.Roles,
       tiers: {} as { [tier: number]: AdditionalInfo },
     };
   });

@@ -29,6 +29,17 @@ router.get(
     // transform matches id into array strings
     const matchesIds = matchesArr.map((match) => String(match.Match));
     const champions = await calculateChampsAverage(session, matchesIds);
+    const databaseChampions = champions.map(champion => ({
+      id: champion.id,
+      name: champion.name,
+      icon: champion.icon,
+      pickrate: champion.pickrate,
+      winrate: champion.winrate,
+    }))
+    const result = await db.insertInto('champions').values(databaseChampions).execute();
+
+    
+
     res.status(StatusCodes.OK).json(champions)
     // // const matchesIds = ids.split(",");
 

@@ -137,10 +137,12 @@ export default async function calculateChampsAverage(
     
     console.log(`relativePickrate:`, {relativePickrate});
 
-    const pickrate = relativePickrate;
+    const pickrate = (champion.timesPicked / (matchesAmount * 10)) * 100;
+    console.log(`pickrate:`, {pickrate});
+    // const pickrate = relativePickrate;
     const winrate = (champion.wins / (champion.wins + champion.loses)) * 100;
-    champion.pickrate = Math.round(pickrate);
-    champion.winrate = Math.round(winrate);
+    champion.pickrate = +pickrate.toFixed(2);
+    champion.winrate = +winrate.toFixed(2);
   });
 
   return updatedChampions

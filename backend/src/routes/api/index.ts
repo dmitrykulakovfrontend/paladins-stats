@@ -12,8 +12,10 @@ import getMatchIdsByQueue from "../../utils/hirezAPI/getMatchIdsByQueue.js";
 import fs from "fs";
 import calculateChampsAverage from "../../utils/calculateChampsAverage.js";
 import dailyStatsTestData from "../../../daily_stats_test_data.json" assert { type: 'json' };
+import daily_stats_test_data from "../../../daily_stats_test_data.json"
 import { DateTime } from "luxon";
 import calculateTotalMatches from "../../utils/calculateTotalMatches.js"
+import insertDailyStats from "../../utils/insertDailyStats.js"
 
 
 const router = Router();
@@ -34,20 +36,8 @@ router.get(
     // transform matches id into array strings
     // const matchesIds = matchesArr.map((match) => String(match.Match));
     // const champions = await calculateChampsAverage(session, matchesIds);
-    
 
-    const totalMatchesInOneDay = calculateTotalMatches(dailyStatsTestData as any);
-    const date = DateTime.now().minus({ day: 1 }).toJSDate();
-    
-    const globalDailyData = {
-      matches: totalMatchesInOneDay,
-      date
-    }
-    // const result = await db.insertInto('champions').values(databaseChampions).execute();
-    const result = await db.insertInto('global_daily_data').values(globalDailyData).execute();
-    
-    // TODO: add verification for each champion that he is exists, in case where there might be 0 data for champion, just use a blank object with 0 data
-
+    const result = await insertDailyStats(2);      
     res.status(StatusCodes.OK).json(result)
     // // const matchesIds = ids.split(",");
 

@@ -20,7 +20,7 @@ export interface DailyStats {
   date: Date;
 }
 
-export interface GlobalDailyData {
+export interface GlobalDailyStats {
   id: Generated<number>;
   matches: number;
   date: Date;
@@ -29,5 +29,5 @@ export interface GlobalDailyData {
 export interface DB {
   champions: Champions;
   daily_stats: DailyStats;
-  global_daily_data: GlobalDailyData;
+  global_daily_stats: GlobalDailyStats;
 }

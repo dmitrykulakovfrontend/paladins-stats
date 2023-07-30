@@ -2,13 +2,21 @@ import calculateTotalMatches from "./calculateTotalMatches.js";
 import dailyStatsTestData from "../../daily_stats_test_data.json" assert { type: 'json' };
 import { db } from "../model/db.js";
 import { DateTime } from 'luxon';
+import { createSession } from "./hirezAPI/session.js";
+import getMatchIdsByQueue from "./hirezAPI/getMatchIdsByQueue.js";
+import calculateChampsAverage from "./calculateChampsAverage.js";
 
-export default async function insertDailyStats(dayOffset: number) {
+export default async function insertDailyStats(dayOffset: number = 1) {
   try {
-      const totalMatchesInOneDay = calculateTotalMatches(dailyStatsTestData as any);
-
-
+      const session = await createSession();
+      console.log(session);
     
+    const matchesArr = await getMatchIdsByQueue(session);
+    // transform matches id into array strings
+    const matchesIds = matchesArr.map((match) => String(match.Match));
+    const champions = await calculateChampsAverage(session, matchesIds);
+    const totalMatchesInOneDay = calculateTotalMatches(champions);
+
     // Calculate the date based on the dayOffset
     const date = DateTime.now().minus({ days: dayOffset }).toJSDate();
 

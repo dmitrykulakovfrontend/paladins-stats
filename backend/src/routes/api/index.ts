@@ -16,6 +16,7 @@ import daily_stats_test_data from "../../../daily_stats_test_data.json"
 import { DateTime } from "luxon";
 import calculateTotalMatches from "../../utils/calculateTotalMatches.js"
 import insertDailyStats from "../../utils/insertDailyStats.js"
+import cron from "node-cron"
 
 
 const router = Router();
@@ -32,13 +33,13 @@ router.get(
     const session = await createSession();
     console.log(session);
     // const players = [];
-    // const matchesArr = await getMatchIdsByQueue(session);
+    const matchesArr = await getMatchIdsByQueue(session);
     // transform matches id into array strings
-    // const matchesIds = matchesArr.map((match) => String(match.Match));
-    // const champions = await calculateChampsAverage(session, matchesIds);
+    const matchesIds = matchesArr.map((match) => String(match.Match));
+    const champions = await calculateChampsAverage(session, matchesIds);
 
-    const result = await insertDailyStats(2);      
-    res.status(StatusCodes.OK).json(result)
+    // const result = await insertDailyStats(6);          
+    // res.status(StatusCodes.OK).json(result)
     // // const matchesIds = ids.split(",");
 
     // // split ids into chunks of 10 ids each to avoid exceeding API limits

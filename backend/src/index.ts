@@ -19,7 +19,7 @@ import cors from "cors";
 import { DatabaseError } from "@planetscale/database";
 
 const app: Application = express();
-const port = 5001;
+const port = process.env.PORT || 5001;
 // Use Morgan with the Chalk-formatted output
 app.use(logger);
 app.use(cors({ origin: "*" }));

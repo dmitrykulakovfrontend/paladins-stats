@@ -12,7 +12,7 @@ import createSignature from "./utils/hirezAPI/misc/createSignature.js";
 import createTimeStamp from "./utils/hirezAPI/misc/createTimeStamp.js";
 import { createSession } from "./utils/hirezAPI/session.js";
 import getMatchDetailsBatch from "./utils/hirezAPI/getMatchDetailsBatch.js";
-import insertDailyStats from "./utils/insertDailyStats.js"
+import insertDailyStats from "./utils/insertDailyStats.js";
 
 import cron from "node-cron";
 import cors from "cors";
@@ -34,12 +34,15 @@ app.get("/", (req, res) => {
   return res.status(StatusCodes.OK).json({ message: "Server works!" });
 });
 
-
 async function runDailyLogic() {
   try {
-    console.log("Starting...");
+    await discordNotification({
+      started: true,
+    });
     await insertDailyStats();
-    console.log("Finished...");
+    await discordNotification({
+      finished: true,
+    });
   } catch (err) {
     if (err instanceof HirezApiError) {
       const { name, message, stack, url, status } = err;
@@ -76,12 +79,7 @@ async function runDailyLogic() {
 
 // Schedule the function to run every 24 hours at 1 AM America time
 // Cron expression: '0 1 * * *' (1:00 AM America time)
-cron.schedule('0 1 * * *', runDailyLogic);
-cron.schedule('0 * * * *', async () => {
-  await discordNotification({
-        test: "test"
-      });
-});
+cron.schedule("0 1 * * *", runDailyLogic);
 
 app.use("/api", apiRouter);
 

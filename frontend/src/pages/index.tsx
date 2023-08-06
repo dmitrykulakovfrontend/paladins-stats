@@ -1,10 +1,12 @@
-import { type NextPage } from "next";
+import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import TextInput from "~/common/components/TextInput";
 import Button from "~/common/components/Button";
 import Table, { HorizontalBar } from "~/common/components/Table";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import ChampionData from "~/types/apiResponses";
+import { API_ENDPOINT } from "~/constants";
 
 const name = (
   <div className="flex items-center gap-2">
@@ -19,51 +21,22 @@ const name = (
   </div>
 );
 
-const Home: NextPage = () => {
-  const roles = [
-    {
-      type: "Damage",
-      champions: [
-        {
-          name: name,
-          pickRate: "13%",
-          winRate: "57%",
-        },
-        {
-          name: name,
-          pickRate: "7%",
-          winRate: "42%",
-        },
-        {
-          name: name,
-          pickRate: "14%",
-          winRate: "56%",
-        },
-      ],
-    },
-    {
-      type: "Support",
-      champions: [
-        {
-          name: name,
-          pickRate: "13%",
-          winRate: "57%",
-        },
-        {
-          name: name,
-          pickRate: "7%",
-          winRate: "42%",
-        },
-        {
-          name: name,
-          pickRate: "14%",
-          winRate: "56%",
-        },
-      ],
-    },
-  ].map((role) => {
+const Home: NextPage = ({ champions }: {
+  champions?: ChampionData[]
+}) => {
+  const roles = champions?.reduce((acc, curr) => { 
+    const role = curr.role;
+    const roleObject = acc.find((item) => item.type === role);
+    if (roleObject) {
+      roleObject.champions.push(curr)
+      return acc;
+    } else {
+      return [...acc, {type: role, champions: [curr]}];
+    }
+  
+  }, [] as {type:string, champions: ChampionData[]}[]).map((role) => {
     const maxWinRate = role.champions.reduce((acc, curr) => {
-      const winrate = parseInt(curr.winRate);
+      const winrate = parseInt(curr.winrate);
       if (winrate > acc) {
         return winrate;
       } else {
@@ -71,7 +44,7 @@ const Home: NextPage = () => {
       }
     }, 0);
     const maxPickRate = role.champions.reduce((acc, curr) => {
-      const pickRate = parseInt(curr.pickRate);
+      const pickRate = parseInt(curr.pickrate);
       if (pickRate > acc) {
         return pickRate;
       } else {
@@ -79,24 +52,24 @@ const Home: NextPage = () => {
       }
     }, 0);
     const newChampions = role.champions.map((champion) => {
-      console.log(champion.winRate);
-      console.log(parseInt(champion.winRate));
+      // console.log(champion.winRate);
+      // console.log(parseInt(champion.winRate));
       return {
         ...champion,
         pickRate: (
           <div>
-            {champion.pickRate}
+            {champion.pickrate}
             <HorizontalBar
-              value={(parseInt(champion.pickRate) / maxPickRate) * 100}
+              value={(parseInt(champion.pickrate) / maxPickRate) * 100}
             />
           </div>
         ),
         winRate: (
           <div>
-            {champion.winRate}
+            {champion.winrate}
             <HorizontalBar
               color={"secondary"}
-              value={(parseInt(champion.winRate) / maxWinRate) * 100}
+              value={(parseInt(champion.winrate) / maxWinRate) * 100}
             />
           </div>
         ),
@@ -108,7 +81,6 @@ const Home: NextPage = () => {
     };
   });
 
-  console.log(roles);
   const features = [
     "All champions",
     "Custom elo system",
@@ -158,7 +130,7 @@ const Home: NextPage = () => {
         </Button>
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
           <Table
-            data={roles[0]!.champions}
+            data={roles && roles[0] ? roles[0].champions : []}
             title={{
               text: "Top Damage Heroes",
               href: "damage",
@@ -174,7 +146,7 @@ const Home: NextPage = () => {
             headers={headers}
           />
           <Table
-            data={roles[1]!.champions}
+            data={roles && roles[1] ? roles[1].champions : []}
             title={{
               text: "Top Support Heroes",
               href: "support",
@@ -190,7 +162,7 @@ const Home: NextPage = () => {
             headers={headers}
           />
           <Table
-            data={roles[1]!.champions}
+            data={roles && roles[2] ? roles[2].champions : []}
             title={{
               text: "Top Tank Heroes",
               href: "tank",
@@ -206,7 +178,7 @@ const Home: NextPage = () => {
             headers={headers}
           />
           <Table
-            data={roles[1]!.champions}
+            data={roles && roles[3] ? roles[3].champions : []}
             title={{
               text: "Top Flank Heroes",
               href: "flank",
@@ -227,6 +199,14 @@ const Home: NextPage = () => {
   );
 };
 
+export const getStaticProps: GetStaticProps<{
+  champions: ChampionData[];
+}> = async () => {
+  const res = await fetch(API_ENDPOINT + "/api/champions")
+  const champions = await res.json() as ChampionData[];
+  return { props: { champions } }
+}
+
 export function CircleIcon() {
   return (
     <svg
@@ -239,8 +219,8 @@ export function CircleIcon() {
       className="h-3 w-3"
     >
       <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         d="M4.5 12.75l6 6 9-13.5"
       ></path>
     </svg>

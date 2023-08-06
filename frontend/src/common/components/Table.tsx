@@ -56,6 +56,7 @@ export default function Table({ headers, data, className = "", title }: Props) {
           </thead>
           <tbody>
             {data.map((champion, index) => {
+              if (champion)
               return (
                 <tr
                   key={index}

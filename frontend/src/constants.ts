@@ -1,4 +1,6 @@
-export const API_ENDPOINT = "https://api.paladins.com/paladinsapi.svc";
+export const API_ENDPOINT = process.env.NODE_ENV === "development" ? "http://localhost:5001" : "https://paladins-stats-production.up.railway.app/";
+
+
 export const Minutes15InSeconds = 900;
 export enum Methods {
   CREATE_SESSION = "createsession",

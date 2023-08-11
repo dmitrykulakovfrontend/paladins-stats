@@ -7,12 +7,14 @@
     "start": "node ./build/index.js",
     "build": "npx tsc",
     "dev": "nodemon ./src/index.ts",
-    "generate:types": "kysely-codegen --out-file ./src/types/db.ts",
-    "render-deploy": "npm ci && npx tsc"
+    "generate:types": "kysely-codegen --out-file ./src/types/db.ts"
   },
   "keywords": [
     "express"
   ],
+  "engines": {
+    "node": ">=16"
+  },
   "author": "Dmitry Kulakov",
   "license": "MIT",
   "type": "module",
@@ -29,7 +31,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@planetscale/database": "^1.7.0",
+    "@planetscale/database": "^1.10.0",
     "axios": "^1.4.0",
     "chalk": "^4.1.2",
     "cors": "^2.8.5",

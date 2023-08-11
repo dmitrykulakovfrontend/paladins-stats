@@ -1,23 +1,14 @@
 import { Router } from "express";
-import { StatusCodes } from "http-status-codes";
 import { db } from "../../model/db.js";
-import axios from "axios";
-import { error } from "../../utils/logging.js";
+import { discordNotification, error } from "../../utils/logging.js";
 import { catchErrors } from "../../utils/errorHandler.js";
 import { sql } from "kysely";
 import { createSession } from "../../utils/hirezAPI/session.js";
-import { GetMatchDetailsBatchResponse } from "../../types/apiResponses.js";
-import getMatchDetailsBatch from "../../utils/hirezAPI/getMatchDetailsBatch.js";
 import getMatchIdsByQueue from "../../utils/hirezAPI/getMatchIdsByQueue.js";
-import fs from "fs";
 import calculateChampsAverage from "../../utils/calculateChampsAverage.js";
-import dailyStatsTestData from "../../../daily_stats_test_data.json" assert { type: 'json' };
-import daily_stats_test_data from "../../../daily_stats_test_data.json"
-import { DateTime } from "luxon";
-import calculateTotalMatches from "../../utils/calculateTotalMatches.js"
-import insertDailyStats from "../../utils/insertDailyStats.js"
-import cron from "node-cron"
-
+import insertDailyStats from "../../utils/insertDailyStats.js";
+import { HirezApiError } from "../../utils/fetchAPI.js";
+import { DatabaseError } from "@planetscale/database";
 
 const router = Router();
 
@@ -37,12 +28,12 @@ router.get(
     // transform matches id into array strings
     const matchesIds = matchesArr.map((match) => String(match.Match));
     const champions = await calculateChampsAverage(session, matchesIds);
-
   })
 );
 router.get(
-  "/champions", catchErrors(async (req, res) => {
-  const response = await sql`
+  "/champions",
+  catchErrors(async (req, res) => {
+    const response = await sql`
     SELECT 
         c.name,
         c.role,
@@ -66,11 +57,56 @@ router.get(
     ORDER BY 
         winrate;
 
-    `.execute(db)
+    `.execute(db);
     res.status(200).json(response.rows);
-
   })
-)
+);
+
+router.get(
+  "/cronjob",
+  catchErrors(async (req, res) => {
+    try {
+      await discordNotification({
+        started: true,
+      });
+      await insertDailyStats();
+      await discordNotification({
+        finished: true,
+      });
+    } catch (err) {
+      if (err instanceof HirezApiError) {
+        const { name, message, stack, url, status } = err;
+        error({
+          name,
+          message,
+          url,
+          status,
+          stack,
+        });
+      } else if (err instanceof DatabaseError) {
+        const { name, message, stack, status } = err;
+        error({
+          name,
+          message,
+          status,
+          stack,
+        });
+      } else if (err instanceof Error) {
+        const { name, message, stack } = err;
+        error({
+          name,
+          message,
+          stack,
+        });
+        await discordNotification({
+          name,
+          message,
+          stack,
+        });
+      }
+    }
+  })
+);
 
 // const { Query } = require('kysely');
 
@@ -87,8 +123,6 @@ router.get(
 
 // console.log(query.toString());
 
-
 //   `
-;
 //   `
 export default router;

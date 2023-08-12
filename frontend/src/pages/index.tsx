@@ -1,11 +1,11 @@
-import { GetStaticProps, type NextPage } from "next";
+import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import TextInput from "~/common/components/TextInput";
 import Button from "~/common/components/Button";
 import Table, { HorizontalBar } from "~/common/components/Table";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
-import ChampionData from "~/types/apiResponses";
+import type ChampionData from "~/types/apiResponses";
 import { API_ENDPOINT } from "~/constants";
 
 const name = (
@@ -21,65 +21,89 @@ const name = (
   </div>
 );
 
-const Home: NextPage = ({ champions }: {
-  champions?: ChampionData[]
-}) => {
-  const roles = champions?.reduce((acc, curr) => { 
-    const role = curr.role;
-    const roleObject = acc.find((item) => item.type === role);
-    if (roleObject) {
-      roleObject.champions.push(curr)
-      return acc;
-    } else {
-      return [...acc, {type: role, champions: [curr]}];
-    }
-  
-  }, [] as {type:string, champions: ChampionData[]}[]).map((role) => {
-    const maxWinRate = role.champions.reduce((acc, curr) => {
-      const winrate = parseInt(curr.winrate);
-      if (winrate > acc) {
-        return winrate;
-      } else {
+type Data = {
+  champions: ChampionData[];
+};
+
+const Home: NextPage<Data> = ({ champions }) => {
+  const roles = champions
+    .reduce((acc, curr) => {
+      const role = curr.role;
+      const roleObject = acc.find((item) => item.type === role);
+      if (roleObject) {
+        roleObject.champions.push(curr);
         return acc;
-      }
-    }, 0);
-    const maxPickRate = role.champions.reduce((acc, curr) => {
-      const pickRate = parseInt(curr.pickrate);
-      if (pickRate > acc) {
-        return pickRate;
       } else {
-        return acc;
+        return [...acc, { type: role, champions: [curr] }];
       }
-    }, 0);
-    const newChampions = role.champions.map((champion) => {
-      // console.log(champion.winRate);
-      // console.log(parseInt(champion.winRate));
+    }, [] as { type: string; champions: ChampionData[] }[])
+    .map((role) => {
+      let maxWinRate = 0;
+      let maxPickRate = 0;
+
+      role.champions.forEach(({ winrate, pickrate }) => {
+        if (parseFloat(winrate) > maxWinRate) {
+          maxWinRate = parseFloat(winrate);
+        }
+        if (parseFloat(pickrate) > maxPickRate) {
+          maxPickRate = parseFloat(pickrate);
+        }
+      });
+
+      const newChampions = role.champions
+        .sort((a, b) => parseFloat(b.pickrate) - parseFloat(a.pickrate))
+        .map((champion) => {
+          console.log("champ pick", champion.pickrate);
+          console.log({ maxPickRate });
+          console.log(
+            "parseFloat(champion.pickrate) / maxPickRate)",
+            parseFloat(champion.pickrate) / maxPickRate
+          );
+          console.log(
+            "(parseFloat(champion.pickrate) / maxPickRate) * 100",
+            (parseFloat(champion.pickrate) / maxPickRate) * 100
+          );
+          return {
+            // ...champion,
+
+            name: (
+              <div className="flex items-center gap-2">
+                <Image
+                  src={champion.icon}
+                  alt=""
+                  width={32}
+                  className="rounded"
+                  height={32}
+                />
+                {champion.name}
+              </div>
+            ),
+            pickrate: (
+              <div>
+                {champion.pickrate}
+                <HorizontalBar
+                  value={(parseFloat(champion.pickrate) / maxPickRate) * 100}
+                />
+              </div>
+            ),
+            winrate: (
+              <div>
+                {champion.winrate}
+                <HorizontalBar
+                  color={"secondary"}
+                  value={(parseFloat(champion.winrate) / maxWinRate) * 100}
+                />
+              </div>
+            ),
+          };
+        })
+        .slice(0, 5);
+
       return {
-        ...champion,
-        pickRate: (
-          <div>
-            {champion.pickrate}
-            <HorizontalBar
-              value={(parseInt(champion.pickrate) / maxPickRate) * 100}
-            />
-          </div>
-        ),
-        winRate: (
-          <div>
-            {champion.winrate}
-            <HorizontalBar
-              color={"secondary"}
-              value={(parseInt(champion.winrate) / maxWinRate) * 100}
-            />
-          </div>
-        ),
+        ...role,
+        champions: newChampions,
       };
     });
-    return {
-      ...role,
-      champions: newChampions,
-    };
-  });
 
   const features = [
     "All champions",
@@ -199,13 +223,11 @@ const Home: NextPage = ({ champions }: {
   );
 };
 
-export const getStaticProps: GetStaticProps<{
-  champions: ChampionData[];
-}> = async () => {
-  const res = await fetch(API_ENDPOINT + "/api/champions")
-  const champions = await res.json() as ChampionData[];
-  return { props: { champions } }
-}
+export const getStaticProps: GetStaticProps<Data> = async () => {
+  const res = await fetch(API_ENDPOINT + "/api/champions");
+  const champions = (await res.json()) as ChampionData[];
+  return { props: { champions } };
+};
 
 export function CircleIcon() {
   return (

@@ -8,19 +8,6 @@ import { UserCircleIcon } from "@heroicons/react/24/solid";
 import type ChampionData from "~/types/apiResponses";
 import { API_ENDPOINT } from "~/constants";
 
-const name = (
-  <div className="flex items-center gap-2">
-    <Image
-      src="https://webcdn.hirezstudios.com/paladins/champion-icons/strix.jpg"
-      alt=""
-      width={32}
-      className="rounded"
-      height={32}
-    />
-    Strix
-  </div>
-);
-
 type Data = {
   champions: ChampionData[];
 };
@@ -53,18 +40,8 @@ const Home: NextPage<Data> = ({ champions }) => {
       const newChampions = role.champions
         .sort((a, b) => parseFloat(b.pickrate) - parseFloat(a.pickrate))
         .map((champion) => {
-          console.log("champ pick", champion.pickrate);
-          console.log({ maxPickRate });
-          console.log(
-            "parseFloat(champion.pickrate) / maxPickRate)",
-            parseFloat(champion.pickrate) / maxPickRate
-          );
-          console.log(
-            "(parseFloat(champion.pickrate) / maxPickRate) * 100",
-            (parseFloat(champion.pickrate) / maxPickRate) * 100
-          );
           return {
-            // ...champion,
+            ...champion,
 
             name: (
               <div className="flex items-center gap-2">
@@ -111,7 +88,17 @@ const Home: NextPage<Data> = ({ champions }) => {
     "Meta suggestions",
     "Graphs and charts",
   ];
-  const headers = ["Champion", "Pick Rate", "Win Rate"];
+  const columns = [{
+    key: "name",
+    name: "Champion"
+  },{
+    key: "pickrate",
+    name:  "Pick Rate"
+  },{
+    key: "winrate",
+    name: "Win Rate"
+  }];
+  
   return (
     <>
       <Head>
@@ -153,75 +140,46 @@ const Home: NextPage<Data> = ({ champions }) => {
           Sign in with Battle.net to see your stats!
         </Button>
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
-          <Table
-            data={roles && roles[0] ? roles[0].champions : []}
+          {roles.map((role, i) => <Table
+            key={i}
+            data={role.champions}
             title={{
-              text: "Top Damage Heroes",
-              href: "damage",
+              text: `Top ${getTitle(role.type)} Champions`,
+              href: getTitle(role.type).toLowerCase(),
               icon: (
                 <Image
-                  src="/img/rolesIcons/damage.webp"
+                  src={`/img/rolesIcons/${getTitle(role.type).toLowerCase()}.webp`}
                   width={32}
                   height={32}
                   alt=""
                 />
               ),
             }}
-            headers={headers}
-          />
-          <Table
-            data={roles && roles[1] ? roles[1].champions : []}
-            title={{
-              text: "Top Support Heroes",
-              href: "support",
-              icon: (
-                <Image
-                  src="/img/rolesIcons/support.webp"
-                  width={32}
-                  height={32}
-                  alt=""
-                />
-              ),
-            }}
-            headers={headers}
-          />
-          <Table
-            data={roles && roles[2] ? roles[2].champions : []}
-            title={{
-              text: "Top Tank Heroes",
-              href: "tank",
-              icon: (
-                <Image
-                  src="/img/rolesIcons/tank.webp"
-                  width={32}
-                  height={32}
-                  alt=""
-                />
-              ),
-            }}
-            headers={headers}
-          />
-          <Table
-            data={roles && roles[3] ? roles[3].champions : []}
-            title={{
-              text: "Top Flank Heroes",
-              href: "flank",
-              icon: (
-                <Image
-                  src="/img/rolesIcons/flank.webp"
-                  width={32}
-                  height={32}
-                  alt=""
-                />
-              ),
-            }}
-            headers={headers}
-          />
+            columns={columns}
+          />)}
         </div>
       </div>
     </>
   );
 };
+
+
+function getTitle(title: string) {
+  switch (title) {
+    case "Paladins Damage":
+      return "Damage";
+    case "Paladins Support":
+      return "Support";
+    case "Paladins Front Line":
+      return "Tank";
+    case "Paladins Flanker":
+      return "Flank";
+    default:
+      return ""
+  }
+}
+
+
 
 export const getStaticProps: GetStaticProps<Data> = async () => {
   const res = await fetch(API_ENDPOINT + "/api/champions");

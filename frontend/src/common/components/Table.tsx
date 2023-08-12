@@ -5,7 +5,10 @@ type Props = {
   data: {
     [key: string]: React.ReactNode;
   }[];
-  headers: string[];
+  columns: {
+    key: string,
+    name: string
+  }[];
   className?: string;
   title?: {
     text?: string;
@@ -14,7 +17,7 @@ type Props = {
   };
 };
 
-export default function Table({ headers, data, className = "", title }: Props) {
+export default function Table({ columns, data, className = "", title }: Props) {
   return (
     <div>
       {title?.text && (
@@ -42,34 +45,30 @@ export default function Table({ headers, data, className = "", title }: Props) {
         <table className={`${className} min-w-full`}>
           <thead className="bg-surface-700">
             <tr>
-              {headers.map((header, index) => (
+              {columns.map(({name}, index) => (
                 <th
                   className={`p-4 ${
                     index === 0 ? "min-w-[150px]" : ""
                   } text-left font-inter text-xs font-medium uppercase tracking-wide text-white/70`}
                   key={index}
                 >
-                  {header}
+                  {name}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((champion, index) => {
-              if (champion)
+            {data.map((rowData, index) => {
               return (
                 <tr
                   key={index}
                   className="odd:bg-surface-odd even:bg-surface-even"
                 >
-                  {Object.values(champion).map((value, index) => (
-                    <td
-                      key={index}
-                      className={`p-4 ${
+                  {columns.map(({ key }) => (
+                    <td className={`p-4 ${
                         index === 0 ? "min-w-[150px]" : ""
-                      } text-sm font-medium text-white/90`}
-                    >
-                      {value}
+                      } text-sm font-medium text-white/90`} key={key}>
+                      {rowData[key]}
                     </td>
                   ))}
                 </tr>

@@ -13,8 +13,8 @@ function Menu({ handleCloseMenu, isActive }: MenuProps) {
   return (
     <>
       <div
-        className={`absolute inset-0 h-screen bg-black/40 transition-opacity duration-500 lg:hidden ${
-          isActive ? "opacity-100" : "-z-10 opacity-0"
+        className={`duration-600 absolute inset-0 h-screen bg-black/40 transition-all lg:hidden ${
+          isActive ? "-left-0 opacity-100" : "-left-full -z-10 opacity-0"
         }`}
       ></div>
       <div

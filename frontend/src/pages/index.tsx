@@ -44,7 +44,7 @@ const Home: NextPage<Data> = ({ champions }) => {
             ...champion,
 
             name: (
-              <div className="flex items-center gap-2">
+              <div className="flex w-fit items-center gap-2">
                 <Image
                   src={champion.icon}
                   alt=""
@@ -88,17 +88,21 @@ const Home: NextPage<Data> = ({ champions }) => {
     "Meta suggestions",
     "Graphs and charts",
   ];
-  const columns = [{
-    key: "name",
-    name: "Champion"
-  },{
-    key: "pickrate",
-    name:  "Pick Rate"
-  },{
-    key: "winrate",
-    name: "Win Rate"
-  }];
-  
+  const columns = [
+    {
+      key: "name",
+      name: "Champion",
+    },
+    {
+      key: "pickrate",
+      name: "Pick Rate",
+    },
+    {
+      key: "winrate",
+      name: "Win Rate",
+    },
+  ];
+
   return (
     <>
       <Head>
@@ -140,29 +144,32 @@ const Home: NextPage<Data> = ({ champions }) => {
           Sign in with Battle.net to see your stats!
         </Button>
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
-          {roles.map((role, i) => <Table
-            key={i}
-            data={role.champions}
-            title={{
-              text: `Top ${getTitle(role.type)} Champions`,
-              href: getTitle(role.type).toLowerCase(),
-              icon: (
-                <Image
-                  src={`/img/rolesIcons/${getTitle(role.type).toLowerCase()}.webp`}
-                  width={32}
-                  height={32}
-                  alt=""
-                />
-              ),
-            }}
-            columns={columns}
-          />)}
+          {roles.map((role, i) => (
+            <Table
+              key={i}
+              data={role.champions}
+              title={{
+                text: `Top ${getTitle(role.type)} Champions`,
+                href: getTitle(role.type).toLowerCase(),
+                icon: (
+                  <Image
+                    src={`/img/rolesIcons/${getTitle(
+                      role.type
+                    ).toLowerCase()}.webp`}
+                    width={32}
+                    height={32}
+                    alt=""
+                  />
+                ),
+              }}
+              columns={columns}
+            />
+          ))}
         </div>
       </div>
     </>
   );
 };
-
 
 function getTitle(title: string) {
   switch (title) {
@@ -175,11 +182,9 @@ function getTitle(title: string) {
     case "Paladins Flanker":
       return "Flank";
     default:
-      return ""
+      return "";
   }
 }
-
-
 
 export const getStaticProps: GetStaticProps<Data> = async () => {
   const res = await fetch(API_ENDPOINT + "/api/champions");

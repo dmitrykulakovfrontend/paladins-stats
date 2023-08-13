@@ -6,8 +6,8 @@ type Props = {
     [key: string]: React.ReactNode;
   }[];
   columns: {
-    key: string,
-    name: string
+    key: string;
+    name: string;
   }[];
   className?: string;
   title?: {
@@ -45,7 +45,7 @@ export default function Table({ columns, data, className = "", title }: Props) {
         <table className={`${className} min-w-full`}>
           <thead className="bg-surface-700">
             <tr>
-              {columns.map(({name}, index) => (
+              {columns.map(({ name }, index) => (
                 <th
                   className={`p-4 ${
                     index === 0 ? "min-w-[150px]" : ""
@@ -65,9 +65,10 @@ export default function Table({ columns, data, className = "", title }: Props) {
                   className="odd:bg-surface-odd even:bg-surface-even"
                 >
                   {columns.map(({ key }) => (
-                    <td className={`p-4 ${
-                        index === 0 ? "min-w-[150px]" : ""
-                      } text-sm font-medium text-white/90`} key={key}>
+                    <td
+                      className="max-w-[120px] p-4 text-sm font-medium text-white/90"
+                      key={key}
+                    >
                       {rowData[key]}
                     </td>
                   ))}

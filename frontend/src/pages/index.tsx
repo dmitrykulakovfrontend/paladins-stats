@@ -1,9 +1,9 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import TextInput from "~/common/components/TextInput";
-import Button from "~/common/components/Button";
-import Table, { HorizontalBar } from "~/common/components/Table";
+import TextInput from "~/components/TextInput";
+import Button from "~/components/Button";
+import Table, { HorizontalBar } from "~/components/Table";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import type ChampionData from "~/types/apiResponses";
 import { API_ENDPOINT } from "~/constants";
@@ -56,16 +56,16 @@ const Home: NextPage<Data> = ({ champions }) => {
               </div>
             ),
             pickrate: (
-              <div>
-                {champion.pickrate}
+              <div className="flex flex-col gap-1">
+                {champion.pickrate} %
                 <HorizontalBar
                   value={(parseFloat(champion.pickrate) / maxPickRate) * 100}
                 />
               </div>
             ),
             winrate: (
-              <div>
-                {champion.winrate}
+              <div className="flex flex-col gap-1">
+                {champion.winrate} %
                 <HorizontalBar
                   color={"secondary"}
                   value={(parseFloat(champion.winrate) / maxWinRate) * 100}
@@ -136,13 +136,13 @@ const Home: NextPage<Data> = ({ champions }) => {
             placeholder="Find player by username"
           />
         </div>
-        <Button
+        {/* <Button
           href="/"
           className="mx-auto flex w-fit gap-2 rounded py-2 text-base font-semibold"
         >
           <UserCircleIcon width={24} color="white" />
           Sign in with Battle.net to see your stats!
-        </Button>
+        </Button> */}
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
           {roles.map((role, i) => (
             <Table
@@ -166,6 +166,9 @@ const Home: NextPage<Data> = ({ champions }) => {
             />
           ))}
         </div>
+        <p className="mt-4 text-center text-xs uppercase text-white/70">
+          Stats from games played this week on PC Competitive
+        </p>
       </div>
     </>
   );

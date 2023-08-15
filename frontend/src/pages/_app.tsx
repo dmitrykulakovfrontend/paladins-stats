@@ -1,9 +1,10 @@
 import { type AppType } from "next/dist/shared/lib/utils";
-import Header from "~/common/components/Header";
+import Header from "~/components/Header";
 import { Montserrat, Inter } from "next/font/google";
 import localFont from "next/font/local";
 
 import "~/styles/globals.css";
+import Footer from "~/components/Footers";
 const titleFont = localFont({
   src: "../fonts/big_noodle_titling.ttf",
   variable: "--font-title",
@@ -26,6 +27,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <main className={`mx-auto min-h-screen  max-w-[1100px] p-4 pt-20`}>
         <Component {...pageProps} />
       </main>
+      <Footer />
     </div>
   );
 };

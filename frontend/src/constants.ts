@@ -1,5 +1,7 @@
-export const API_ENDPOINT = process.env.NODE_ENV === "development" ? "http://localhost:5001" : "https://paladins-stats-production.up.railway.app/";
-
+export const API_ENDPOINT =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5001"
+    : "https://paladins-stats-production.up.railway.app/";
 
 export const Minutes15InSeconds = 900;
 export enum Methods {
@@ -10,6 +12,25 @@ export enum Methods {
   GET_CHAMPIONS = "getchampions",
   GET_PLAYER = "getplayer",
 }
+
+export const LINKS = [
+  {
+    title: "Meta",
+    href: "/meta",
+  },
+  {
+    title: "Roles Stats",
+    href: "/roles",
+  },
+  {
+    title: "Champions Stats",
+    href: "/champions",
+  },
+  {
+    title: "Leaderboard",
+    href: "/leaderboard",
+  },
+];
 
 export enum Queues {
   SIEGE = "424",

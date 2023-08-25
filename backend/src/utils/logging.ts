@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import { Request, Response } from "express";
 import morgan from "morgan";
 import { getReasonPhrase } from "http-status-codes";
 import axios from "axios";

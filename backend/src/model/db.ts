@@ -1,9 +1,8 @@
 import { Kysely } from "kysely";
 import { PlanetScaleDialect } from "kysely-planetscale";
-import { ColumnType } from "kysely";
 import dotenv from "dotenv";
 import { fetch } from "undici";
-import { DB, Champions } from "~/types/db.js";
+import { DB } from "~/types/db.js";
 dotenv.config();
 if (!process.env.DATABASE_HOST) throw new Error("DATABASE_HOST not set");
 if (!process.env.DATABASE_USERNAME)

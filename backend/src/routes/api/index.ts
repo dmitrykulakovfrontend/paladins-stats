@@ -1,48 +1,38 @@
 import { Router } from "express";
-import { StatusCodes } from "http-status-codes";
 import { db } from "../../model/db.js";
-import axios from "axios";
-import { error } from "../../utils/logging.js";
 import { catchErrors } from "../../utils/errorHandler.js";
 import { sql } from "kysely";
-import { createSession } from "../../utils/hirezAPI/session.js";
-import { GetMatchDetailsBatchResponse } from "../../types/apiResponses.js";
-import getMatchDetailsBatch from "../../utils/hirezAPI/getMatchDetailsBatch.js";
-import getMatchIdsByQueue from "../../utils/hirezAPI/getMatchIdsByQueue.js";
-import fs from "fs";
-import calculateChampsAverage from "../../utils/calculateChampsAverage.js";
-import dailyStatsTestData from "../../../daily_stats_test_data.json" assert { type: 'json' };
-import daily_stats_test_data from "../../../daily_stats_test_data.json"
-import { DateTime } from "luxon";
-import calculateTotalMatches from "../../utils/calculateTotalMatches.js"
-import insertDailyStats from "../../utils/insertDailyStats.js"
-import cron from "node-cron"
-
+import insertDailyStats from "../../utils/insertDailyStats.js";
 
 const router = Router();
 
 router.get(
   "/",
-  catchErrors(async (req, res) => {
+  catchErrors(async (_req, _res) => {
     // const matchesFromDB = await db
     //   .selectFrom("matches")
     //   .selectAll()
     //   .where("date","=", "2023-04-24")
     //   .limit(10)
     //   .execute();
-    const session = await createSession();
-    console.log(session);
-    // const players = [];
-    const matchesArr = await getMatchIdsByQueue(session);
-    // transform matches id into array strings
-    const matchesIds = matchesArr.map((match) => String(match.Match));
-    const champions = await calculateChampsAverage(session, matchesIds);
-
   })
 );
 router.get(
-  "/champions", catchErrors(async (req, res) => {
-  const response = await sql`
+  "/daily",
+  catchErrors(async (_req, _res) => {
+    // const matchesFromDB = await db
+    //   .selectFrom("matches")
+    //   .selectAll()
+    //   .where("date","=", "2023-04-24")
+    //   .limit(10)
+    //   .execute();
+    await insertDailyStats();
+  })
+);
+router.get(
+  "/champions",
+  catchErrors(async (_req, res) => {
+    const response = await sql`
     SELECT 
         c.name,
         c.role,
@@ -66,11 +56,10 @@ router.get(
     ORDER BY 
         winrate;
 
-    `.execute(db)
+    `.execute(db);
     res.status(200).json(response.rows);
-
   })
-)
+);
 
 // const { Query } = require('kysely');
 
@@ -87,8 +76,6 @@ router.get(
 
 // console.log(query.toString());
 
-
 //   `
-;
 //   `
 export default router;

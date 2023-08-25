@@ -1,17 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express, { Application, Request, Response } from "express";
-import { info, logger, error, discordNotification } from "./utils/logging.js";
+import express, { Application } from "express";
+import { logger, error, discordNotification } from "./utils/logging.js";
 import { StatusCodes } from "http-status-codes";
-import { db } from "./model/db.js";
 import apiRouter from "./routes/api/index.js";
-import errorHandler, { catchErrors } from "./utils/errorHandler.js";
-import fetchAPI, { HirezApiError } from "./utils/fetchAPI.js";
-import { API_ENDPOINT, Methods } from "./constants.js";
-import createSignature from "./utils/hirezAPI/misc/createSignature.js";
-import createTimeStamp from "./utils/hirezAPI/misc/createTimeStamp.js";
-import { createSession } from "./utils/hirezAPI/session.js";
-import getMatchDetailsBatch from "./utils/hirezAPI/getMatchDetailsBatch.js";
+import errorHandler from "./utils/errorHandler.js";
+import { HirezApiError } from "./utils/fetchAPI.js";
 import insertDailyStats from "./utils/insertDailyStats.js";
 
 import cron from "node-cron";
@@ -28,7 +22,7 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   console.log("request");
   // throw new Error("Discord test");
   return res.status(StatusCodes.OK).json({ message: "Server works!" });

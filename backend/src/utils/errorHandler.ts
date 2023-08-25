@@ -6,9 +6,9 @@ import { StatusCodes } from "http-status-codes";
 
 async function errorHandler(
   err: unknown,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
   if (err instanceof HirezApiError) {
     const { name, message, stack, url, status } = err;

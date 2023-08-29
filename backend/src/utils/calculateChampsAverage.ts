@@ -1,7 +1,7 @@
 import { type Player } from "../types/apiResponses.js";
 import getChampions from "./hirezAPI/getChampions.js";
 import getMatchDetailsBatch from "./hirezAPI/getMatchDetailsBatch.js";
-import { info } from "./logging.js";
+import { error, info } from "./logging.js";
 
 export default async function calculateChampsAverage(
   sessionID: string,
@@ -83,6 +83,15 @@ export default async function calculateChampsAverage(
       timesPicked: 0,
       pickrate: 0,
       winrate: 0,
+      kills: 0,
+      deaths: 0,
+      assists: 0,
+      objectiveTime: 0,
+      damage: 0,
+      soloKills: 0,
+      selfHealing: 0,
+      goldPerMinute: 0,
+      matchDuration: 0,
       role: champion.Roles,
       tiers: {} as { [tier: number]: AdditionalInfo },
     };
@@ -95,7 +104,10 @@ export default async function calculateChampsAverage(
         (champion) => champion.id === player.ChampionId
       );
       if (!champion) {
-        throw new Error(`No found champion for ${player.ChampionId}`);
+        error(
+          `No found champion for ${player.ChampionId} ${player.Reference_Name}`
+        );
+        return;
       }
       // update global stats
       player.Win_Status === "Winner"
@@ -114,33 +126,22 @@ export default async function calculateChampsAverage(
           timesPicked: 1,
         };
       }
+      // update champion additional stats
+      champion.kills += player.Kills_Player;
+      champion.deaths += player.Deaths;
+      champion.assists += player.Assists;
+      champion.objectiveTime += player.Objective_Assists;
+      champion.damage += player.Damage_Player;
+      champion.soloKills += player.Kills_Bot;
+      champion.selfHealing += player.Healing_Player_Self;
+      champion.goldPerMinute += player.Gold_Per_Minute;
+      champion.matchDuration += player.Match_Duration;
     });
   });
-  //calculate total number of matches in that hour
 
-  
-
-  console.log({matchesAmount})
   // calculate champion pickrate and winrate
   updatedChampions.forEach((champion) => {
-    console.log({picked: champion.timesPicked})
-  // Step 2: Calculate the specific champion's pickrate
-  const specificChampionPickrate = champion.timesPicked / matchesAmount;
-    console.log({specificChampionPickrate});
-  // Step 3: Calculate the total times picked for all other champions
-  const otherChampionsTimesPicked = (matchesAmount * 10) - champion.timesPicked
-    console.log({otherChampionsTimesPicked});
-  // Step 4: Calculate the average pickrate of all other champions
-  const averagePickrate = otherChampionsTimesPicked / matchesAmount;
-    console.log({averagePickrate});
-  // Step 5: Calculate the relative pickrate
-    const relativePickrate = specificChampionPickrate / averagePickrate;
-    
-    console.log(`relativePickrate:`, {relativePickrate});
-
     const pickrate = (champion.timesPicked / (matchesAmount * 10)) * 100;
-    console.log(`pickrate:`, {pickrate});
-    // const pickrate = relativePickrate;
     const winrate = (champion.wins / (champion.wins + champion.loses)) * 100;
     champion.pickrate = +pickrate.toFixed(2);
     champion.winrate = +winrate.toFixed(2);

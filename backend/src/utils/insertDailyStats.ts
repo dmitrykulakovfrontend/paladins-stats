@@ -30,13 +30,21 @@ export default async function insertDailyStats(dayOffset: number = 1) {
       .values(globalDailyData)
       .executeTakeFirst();
     if (!insertId) throw new Error("No InsertId");
-
     // Create data to insert into 'daily_stats' table
     const dataToInsert = champions.map((obj) => ({
       champion_id: obj.id,
       the_day_total_matches_id: Number(insertId),
       loses: obj.loses,
       wins: obj.wins,
+      deaths: obj.deaths,
+      kills: obj.kills,
+      assists: obj.assists,
+      objective_time: obj.objectiveTime,
+      damage: obj.damage,
+      solo_kills: obj.soloKills,
+      self_healing: obj.selfHealing,
+      gold_per_minute: obj.goldPerMinute,
+      match_duration: obj.matchDuration,
       date,
     }));
 

@@ -18,6 +18,15 @@ export interface DailyStats {
   loses: number;
   wins: number;
   date: Date;
+  objective_time: number | null;
+  assists: number | null;
+  damage: number | null;
+  deaths: number | null;
+  kills: number | null;
+  solo_kills: number | null;
+  self_healing: number | null;
+  gold_per_minute: number | null;
+  match_duration: number | null;
 }
 
 export interface GlobalDailyStats {

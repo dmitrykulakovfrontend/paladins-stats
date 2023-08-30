@@ -92,6 +92,8 @@ export default async function calculateChampsAverage(
       selfHealing: 0,
       goldPerMinute: 0,
       matchDuration: 0,
+      shielding: 0,
+      healing: 0,
       role: champion.Roles,
       tiers: {} as { [tier: number]: AdditionalInfo },
     };
@@ -136,6 +138,8 @@ export default async function calculateChampsAverage(
       champion.selfHealing += player.Healing_Player_Self;
       champion.goldPerMinute += player.Gold_Per_Minute;
       champion.matchDuration += player.Match_Duration;
+      champion.shielding += player.Damage_Mitigated;
+      champion.healing += player.Healing;
     });
   });
 

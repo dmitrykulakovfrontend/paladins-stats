@@ -73,7 +73,19 @@ router.get(
         ROUND(AVG(CASE 
                 WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.gold_per_minute / (ds.match_duration / 60) * 10
                 ELSE NULL
-            END), 2) AS gold_per_minute_10_min
+            END), 2) AS gold_per_minute_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.healing / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS healing_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.shielding / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS shielding_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.objective_time / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS objective_time_10_min
     FROM 
         champions AS c
     INNER JOIN 

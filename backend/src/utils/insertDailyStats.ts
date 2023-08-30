@@ -45,6 +45,8 @@ export default async function insertDailyStats(dayOffset: number = 1) {
       self_healing: obj.selfHealing,
       gold_per_minute: obj.goldPerMinute,
       match_duration: obj.matchDuration,
+      healing: obj.healing,
+      shielding: obj.shielding,
       date,
     }));
 

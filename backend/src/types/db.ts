@@ -27,6 +27,8 @@ export interface DailyStats {
   self_healing: number | null;
   gold_per_minute: number | null;
   match_duration: number | null;
+  healing: number | null;
+  shielding: number | null;
 }
 
 export interface GlobalDailyStats {

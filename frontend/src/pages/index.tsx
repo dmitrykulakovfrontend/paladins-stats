@@ -7,6 +7,8 @@ import Table, { HorizontalBar } from "~/components/Table";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import type ChampionData from "~/types/apiResponses";
 import { API_ENDPOINT } from "~/constants";
+import Link from "next/link";
+import formatString from "~/utils/formatString";
 
 type Data = {
   champions: ChampionData[];
@@ -44,7 +46,10 @@ const Home: NextPage<Data> = ({ champions }) => {
             ...champion,
 
             name: (
-              <div className="flex w-fit items-center gap-2">
+              <Link
+                href={`/champions/${champion.id}`}
+                className="flex w-fit items-center gap-2"
+              >
                 <Image
                   src={champion.icon}
                   alt=""
@@ -53,7 +58,7 @@ const Home: NextPage<Data> = ({ champions }) => {
                   height={32}
                 />
                 {champion.name}
-              </div>
+              </Link>
             ),
             pickrate: (
               <div className="flex flex-col gap-1">

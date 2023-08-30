@@ -36,6 +36,7 @@ router.get(
     const response = await sql`
     SELECT 
         c.name,
+        c.id,
         c.role,
         c.icon,
         ROUND(AVG(CASE 
@@ -99,6 +100,76 @@ router.get(
         
     `.execute(db);
     res.status(200).json(response.rows);
+  })
+);
+
+router.get(
+  "/champions/:id",
+  catchErrors(async (req, res) => {
+    const response = await sql`
+    SELECT 
+        c.name,
+        c.id,
+        c.role,
+        c.icon,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN (ds.wins / (ds.wins + ds.loses) * 100)
+                ELSE NULL
+            END), 2) AS winrate,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN (ds.wins + ds.loses) / gds.matches * 100
+                ELSE NULL
+            END), 2) AS pickrate,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.damage / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS damage_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.deaths / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS deaths_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.assists / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS assists_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.kills / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS kills_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.solo_kills / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS solo_kills_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.self_healing / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS self_healing_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.gold_per_minute / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS gold_per_minute_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.healing / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS healing_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.shielding / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS shielding_10_min,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.objective_time / (ds.match_duration / 60) * 10
+                ELSE NULL
+            END), 2) AS objective_time_10_min
+    FROM 
+        champions AS c
+    INNER JOIN 
+        daily_stats AS ds ON ds.champion_id = c.id
+    INNER JOIN 
+        global_daily_stats AS gds ON gds.id = ds.the_day_total_matches_id
+    WHERE
+        c.id = ${req.params.id}
+    `.execute(db);
+    res.status(200).json(response.rows[0]);
   })
 );
 

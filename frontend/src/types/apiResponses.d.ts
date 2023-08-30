@@ -1,4 +1,5 @@
 interface ChampionData {
+  id: string;
   name: string;
   role: string;
   icon: string;

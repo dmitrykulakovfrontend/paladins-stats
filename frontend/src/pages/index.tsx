@@ -1,14 +1,11 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import TextInput from "~/components/TextInput";
-import Button from "~/components/Button";
 import Table, { HorizontalBar } from "~/components/Table";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
 import type ChampionData from "~/types/apiResponses";
 import { API_ENDPOINT } from "~/constants";
 import Link from "next/link";
-import formatString from "~/utils/formatString";
+import getRole from "~/utils/getRole";
 
 type Data = {
   champions: ChampionData[];
@@ -135,13 +132,13 @@ const Home: NextPage<Data> = ({ champions }) => {
             </div>
           </div>
         </div>
-        <div className="border-brand-500 mx-auto my-8 w-full rounded-md border-2 border-sky-300 bg-black text-xl text-white shadow-lg md:w-[75%]">
+        {/* <div className="border-brand-500 mx-auto my-8 w-full rounded-md border-2 border-sky-300 bg-black text-xl text-white shadow-lg md:w-[75%]">
           <TextInput
             className="p-4 text-xl"
             placeholder="Find player by username"
           />
         </div>
-        {/* <Button
+        <Button
           href="/"
           className="mx-auto flex w-fit gap-2 rounded py-2 text-base font-semibold"
         >
@@ -154,11 +151,11 @@ const Home: NextPage<Data> = ({ champions }) => {
               key={i}
               data={role.champions}
               title={{
-                text: `Top ${getTitle(role.type)} Champions`,
-                href: getTitle(role.type).toLowerCase(),
+                text: `Top ${getRole(role.type)} Champions`,
+                href: getRole(role.type).toLowerCase(),
                 icon: (
                   <Image
-                    src={`/img/rolesIcons/${getTitle(
+                    src={`/img/rolesIcons/${getRole(
                       role.type
                     ).toLowerCase()}.webp`}
                     width={32}
@@ -178,21 +175,6 @@ const Home: NextPage<Data> = ({ champions }) => {
     </>
   );
 };
-
-function getTitle(title: string) {
-  switch (title) {
-    case "Paladins Damage":
-      return "Damage";
-    case "Paladins Support":
-      return "Support";
-    case "Paladins Front Line":
-      return "Tank";
-    case "Paladins Flanker":
-      return "Flank";
-    default:
-      return "";
-  }
-}
 
 export const getStaticProps: GetStaticProps<Data> = async () => {
   const res = await fetch(API_ENDPOINT + "/api/champions");

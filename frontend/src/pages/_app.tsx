@@ -24,7 +24,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       className={`${montserrat.variable} ${inter.variable} ${titleFont.variable} font-montserrat `}
     >
       <Header />
-      <main className={`mx-auto min-h-screen  max-w-[1100px] p-4 pt-20`}>
+      <main className={`mx-auto min-h-screen  max-w-[1140px] pt-20`}>
         <Component {...pageProps} />
       </main>
       <Footer />

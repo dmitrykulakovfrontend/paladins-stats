@@ -9,12 +9,15 @@ const config = {
         title: ["var(--font-title)", "sans-serif"],
       },
       colors: {
+        "surface-300": "#445B94",
+        "surface-400": "#32436E",
         "surface-500": "#212c47",
         "surface-600": "#1a2339",
         "surface-700": "#151C2D",
         "surface-even": "#1F2942",
         "surface-odd": "#212C47",
-        "stat-win": "#8FBC8F"
+        "stat-win": "#8FBC8F",
+        "green-primary": "rgb(132 254 1 / 10%)",
       },
     },
   },

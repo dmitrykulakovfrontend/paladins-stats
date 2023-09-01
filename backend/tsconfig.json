@@ -22,10 +22,7 @@
     // "checkJs": true
     "moduleResolution": "nodenext",
     "outDir": "./build",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"]
-    }
+    "baseUrl": "."
   },
   "ts-node": {
     "esm": true

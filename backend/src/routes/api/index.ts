@@ -3,6 +3,8 @@ import { db } from "../../model/db.js";
 import { catchErrors } from "../../utils/errorHandler.js";
 import { sql } from "kysely";
 import insertDailyStats from "../../utils/insertDailyStats.js";
+import { createSession } from "../../utils/hirezAPI/session.js";
+import getDataUsed from "../../utils/hirezAPI/getDataUsed.js";
 
 const router = Router();
 
@@ -31,6 +33,14 @@ router.get(
   })
 );
 router.get(
+  "/dataused",
+  catchErrors(async (_req, res) => {
+    const session = await createSession();
+    const dataUsed = await getDataUsed(session);
+    res.status(200).json(dataUsed);
+  })
+);
+router.get(
   "/champions",
   catchErrors(async (_req, res) => {
     const response = await sql`
@@ -47,6 +57,10 @@ router.get(
                 WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN (ds.wins + ds.loses) / gds.matches * 100
                 ELSE NULL
             END), 2) AS pickrate,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN (ds.kills + (ds.assists / 2)) / ds.deaths
+                ELSE NULL
+            END), 2) AS KDA,
         ROUND(AVG(CASE 
                 WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.damage / (ds.match_duration / 60) * 10
                 ELSE NULL
@@ -120,6 +134,10 @@ router.get(
                 WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN (ds.wins + ds.loses) / gds.matches * 100
                 ELSE NULL
             END), 2) AS pickrate,
+        ROUND(AVG(CASE 
+                WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN (ds.kills + (ds.assists / 2)) / ds.deaths
+                ELSE NULL
+            END), 2) AS KDA,
         ROUND(AVG(CASE 
                 WHEN gds.date BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 8 DAY) AND CURRENT_DATE() THEN ds.damage / (ds.match_duration / 60) * 10
                 ELSE NULL

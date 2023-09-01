@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { type Methods } from "~/constants.js";
+import { type Methods } from "../../../constants.js";
 import createTimeStamp from "./createTimeStamp.js";
 
 export default function createSignature(method: Methods) {

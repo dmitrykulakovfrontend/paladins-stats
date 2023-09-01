@@ -1,7 +1,6 @@
-import { Champion } from "~/types/common.js";
+import { Champion } from "../types/common.js";
 
-
- function calculateTotalMatches(champions: Champion[]): number {
+function calculateTotalMatches(champions: Champion[]): number {
   let totalMatches = 0;
 
   for (const champion of champions) {
@@ -11,5 +10,4 @@ import { Champion } from "~/types/common.js";
   return totalMatches;
 }
 
-
-export default calculateTotalMatches
+export default calculateTotalMatches;

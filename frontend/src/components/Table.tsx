@@ -48,7 +48,7 @@ export default function Table({ columns, data, className = "", title }: Props) {
               {columns.map(({ name }, index) => (
                 <th
                   className={`p-4 ${
-                    index === 0 ? "min-w-[150px]" : ""
+                    index === 0 ? "min-w-[145px]" : ""
                   } text-left font-inter text-xs font-medium uppercase tracking-wide text-white/70`}
                   key={index}
                 >

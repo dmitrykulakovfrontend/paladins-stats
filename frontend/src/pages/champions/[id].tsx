@@ -1,3 +1,4 @@
+import { Duration } from "luxon";
 import { type NextPage, type GetStaticPaths, type GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,12 +6,13 @@ import { type ParsedUrlQuery } from "querystring";
 import Button from "~/components/Button";
 import { API_ENDPOINT } from "~/constants";
 import type ChampionData from "~/types/apiResponses";
+import formatNumber from "~/utils/formatNumber";
 import getRole from "~/utils/getRole";
 
 const ChampionPage: NextPage<{ champion: ChampionData }> = ({ champion }) => {
   console.log(champion);
   return (
-    <div className="mt-8 text-white/70 ">
+    <div className=" mt-2 p-2 text-white/70 sm:mt-8 ">
       <div className="rounded-lg bg-surface-500 shadow-lg">
         <div className="overflow-hidden rounded-t-lg">
           <div className="h-24 w-full bg-green-primary object-cover"></div>
@@ -36,7 +38,7 @@ const ChampionPage: NextPage<{ champion: ChampionData }> = ({ champion }) => {
                   </h1>
                 </div>
                 <Link
-                  className="text-secondary flex flex-row flex-nowrap items-center justify-start"
+                  className="text-secondary flex flex-row flex-nowrap items-center justify-start gap-2"
                   href={`/roles/${getRole(champion.role).toLowerCase()}`}
                 >
                   <Image
@@ -137,9 +139,161 @@ const ChampionPage: NextPage<{ champion: ChampionData }> = ({ champion }) => {
           </div> */}
         </div>
       </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3">
+        <Statistics champion={champion} />
+      </div>
     </div>
   );
 };
+
+function Statistics({ champion }: { champion: ChampionData }) {
+  const mainStats = [
+    {
+      title: "KDA Ratio",
+      value: champion.KDA,
+      color: "text-white/90",
+    },
+    {
+      title: "Pick Rate",
+      value: champion.pickrate,
+      color: "text-sky-300",
+      percentage: true,
+    },
+    {
+      title: "Win Rate",
+      value: champion.winrate,
+      color: "text-stat-win",
+      percentage: true,
+    },
+  ];
+  const secondaryStats = [
+    {
+      title: "Kills",
+      value: champion.kills_10_min,
+    },
+    {
+      title: "Deaths",
+      value: champion.deaths_10_min,
+    },
+    {
+      title: "Assists",
+      value: champion.assists_10_min,
+    },
+    {
+      title: "Solo Kills",
+      value: champion.solo_kills_10_min,
+    },
+  ];
+  const otherStats = [
+    {
+      title: "Damage",
+      value: champion.damage_10_min,
+    },
+    {
+      title: "Shielding",
+      value: champion.shielding_10_min,
+    },
+    {
+      title: "Healing",
+      value: champion.healing_10_min,
+    },
+    {
+      title: "Self Healing",
+      value: champion.self_healing_10_min,
+    },
+    {
+      title: "Objective Time",
+      value: Duration.fromObject({
+        seconds: parseInt(champion.objective_time_10_min),
+      }).toFormat("m:ss"),
+      time: true,
+    },
+    {
+      title: "Gold Per Minute",
+      value: champion.gold_per_minute_10_min,
+    },
+  ];
+  return (
+    <div className="col-span-2">
+      <div className="mb-2 flex h-10 flex-row flex-wrap items-end justify-start sm:flex-nowrap">
+        <h1 className="flex-1 self-end pl-2 font-sans text-lg font-semibold text-white/90">
+          Average Statistics
+        </h1>
+      </div>
+      <div className="w-full rounded-lg bg-surface-500 shadow-lg">
+        <div className="rounded-lg bg-surface-500 shadow-lg">
+          <div className="grid grid-cols-2 items-end gap-4 rounded-t-lg p-4 sm:grid-cols-3">
+            {mainStats.map((stat) => (
+              <div className="col-span-1" key={stat.title}>
+                <div className="flex h-full flex-col justify-around">
+                  <div className="text-sm leading-none sm:text-base">
+                    <span className={`font-semibold ${stat.color}`}>
+                      <span>
+                        {formatNumber(stat.value)}
+                        {stat.percentage && (
+                          <span className="ml-[1px] text-sm">%</span>
+                        )}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="text-secondary text-xs sm:text-sm">
+                    {stat.title}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-2 gap-4 rounded-b-lg bg-green-primary p-4 sm:grid-cols-3">
+            <div className="col-span-2 sm:col-span-3">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {secondaryStats.map((stat) => (
+                  <div className="col-span-1" key={stat.title}>
+                    <div className="flex h-full flex-col justify-around">
+                      <div className="text-sm leading-none sm:text-base">
+                        <span className="font-semibold text-white/90">
+                          <span>{formatNumber(stat.value)}</span>
+                        </span>
+                        <span className="text-secondary pl-1 text-xs opacity-60">
+                          / 10min
+                        </span>
+                      </div>
+                      <div className="text-secondary text-xs sm:text-sm">
+                        {stat.title}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="col-span-2 sm:col-span-3">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {otherStats.map((stat) => (
+                  <div className="col-span-1" key={stat.title}>
+                    <div className="flex h-full flex-col justify-around">
+                      <div className="text-sm leading-none sm:text-base">
+                        <span className="font-semibold text-white/90">
+                          <span>
+                            {stat.time ? stat.value : formatNumber(stat.value)}
+                          </span>
+                        </span>
+                        <span className="text-secondary pl-1 text-xs opacity-60">
+                          / 10min
+                        </span>
+                      </div>
+                      <div className="text-secondary text-xs sm:text-sm">
+                        {stat.title}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const res = await fetch(API_ENDPOINT + "/api/champions");

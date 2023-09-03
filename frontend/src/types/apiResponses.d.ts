@@ -1,4 +1,9 @@
-interface ChampionData {
+export interface ChampionStats {
+  globalStats: GlobalStats;
+  weeklyStats: WeeklyStat[];
+}
+
+export interface GlobalStats {
   name: string;
   id: number;
   role: string;
@@ -18,4 +23,8 @@ interface ChampionData {
   objective_time_10_min: string;
 }
 
-export default ChampionData;
+export interface WeeklyStat {
+  winrate: string;
+  pickrate: string;
+  date: Date;
+}

@@ -1,15 +1,76 @@
-import { Duration } from "luxon";
+import { DateTime, Duration } from "luxon";
 import { type NextPage, type GetStaticPaths, type GetStaticProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { type ParsedUrlQuery } from "querystring";
+import {
+  AreaChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Area,
+  ResponsiveContainer,
+  type TooltipProps,
+} from "recharts";
+import {
+  type NameType,
+  type ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 import Button from "~/components/Button";
 import { API_ENDPOINT } from "~/constants";
-import type ChampionData from "~/types/apiResponses";
+import {
+  type WeeklyStat,
+  type ChampionStats,
+  type GlobalStats,
+} from "~/types/apiResponses";
 import formatNumber from "~/utils/formatNumber";
 import getRole from "~/utils/getRole";
-
-const ChampionPage: NextPage<{ champion: ChampionData }> = ({ champion }) => {
+const data = [
+  {
+    name: "Page A",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+];
+const ChampionPage: NextPage<{ champion: ChampionStats }> = ({ champion }) => {
   console.log(champion);
   return (
     <div className=" mt-2 p-2 text-white/70 sm:mt-8 ">
@@ -23,10 +84,10 @@ const ChampionPage: NextPage<{ champion: ChampionData }> = ({ champion }) => {
             <div className="-mt-8 md:absolute md:-top-8 md:mt-0">
               <div className="shadow-dark relative h-24 w-24 overflow-hidden rounded-lg bg-black shadow ring-2 ring-surface-500 sm:h-32 sm:w-32">
                 <Image
-                  src={champion.icon}
+                  src={champion.globalStats.icon}
                   height={128}
                   width={128}
-                  alt={champion.name + " icon"}
+                  alt={champion.globalStats.name + " icon"}
                 />
               </div>
             </div>
@@ -34,23 +95,25 @@ const ChampionPage: NextPage<{ champion: ChampionData }> = ({ champion }) => {
               <div className="min-w-0 flex-1 space-y-2">
                 <div className="flex flex-row flex-nowrap items-center justify-start gap-2">
                   <h1 className="font-title text-3xl italic text-white/90 md:text-4xl">
-                    {champion.name}
+                    {champion.globalStats.name}
                   </h1>
                 </div>
                 <Link
                   className="text-secondary flex flex-row flex-nowrap items-center justify-start gap-2"
-                  href={`/roles/${getRole(champion.role).toLowerCase()}`}
+                  href={`/roles/${getRole(
+                    champion.globalStats.role
+                  ).toLowerCase()}`}
                 >
                   <Image
                     src={`/img/rolesIcons/${getRole(
-                      champion.role
+                      champion.globalStats.role
                     ).toLowerCase()}.webp`}
                     width={24}
                     height={24}
                     alt=""
                   />
                   <div className="text-sm font-medium leading-none tracking-tighter">
-                    {getRole(champion.role)}
+                    {getRole(champion.globalStats.role)}
                   </div>
                 </Link>
               </div>
@@ -139,29 +202,141 @@ const ChampionPage: NextPage<{ champion: ChampionData }> = ({ champion }) => {
           </div> */}
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3">
-        <Statistics champion={champion} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Statistics stats={champion.globalStats} />
+        <div className="col-span-1">
+          <div className="mb-2 flex h-10 flex-row flex-wrap items-end justify-start sm:flex-nowrap">
+            <h1 className="flex-1 self-end pl-2 font-sans text-lg font-semibold text-white/90">
+              Win Rate
+            </h1>
+          </div>
+          <StatChart<WeeklyStat>
+            data={champion.weeklyStats}
+            keyX="date"
+            keyY="winrate"
+            color="#8FBC8F"
+          />
+          <div className="mb-2 flex h-10 flex-row flex-wrap items-end justify-start sm:flex-nowrap">
+            <h1 className="flex-1 self-end pl-2 font-sans text-lg font-semibold text-white/90">
+              Pick Rate
+            </h1>
+          </div>
+          <StatChart<WeeklyStat>
+            data={champion.weeklyStats}
+            keyX="date"
+            keyY="pickrate"
+            color="rgb(125, 211, 252)"
+          />
+        </div>
       </div>
     </div>
   );
 };
 
-function Statistics({ champion }: { champion: ChampionData }) {
+function StatChart<T>({
+  keyY,
+  keyX,
+  data,
+  color,
+}: {
+  keyY: Exclude<keyof T, symbol>;
+  keyX: Exclude<keyof T, symbol>;
+  data: T[];
+  color: string;
+}) {
+  return (
+    <ResponsiveContainer
+      width="100%"
+      height={190}
+      className="relative w-full rounded-lg  bg-surface-500 shadow-lg"
+    >
+      <AreaChart height={190} data={data}>
+        <defs>
+          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="99%" stopColor={color} stopOpacity={0.1} />
+            <stop offset="99%" stopColor={color} stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis
+          dataKey={keyX}
+          stroke="rgba(255, 255, 255, 0.7)"
+          fontSize={12}
+          axisLine={false}
+          padding={{
+            right: 20,
+          }}
+          tickLine={false}
+          tickFormatter={(value: string) =>
+            DateTime.fromFormat(value, "yyyy-MM-dd").toFormat("d MMM")
+          }
+          tickMargin={0}
+        />
+        <YAxis
+          axisLine={false}
+          tickLine={false}
+          tickFormatter={(value: string) => `${(+value).toFixed(2)}%`}
+          stroke="rgba(255, 255, 255, 0.7)"
+          fontSize={12}
+          padding={{ bottom: 10 }}
+          fontWeight={500}
+        />
+        <Tooltip content={<CustomTooltip />} />
+        <CartesianGrid strokeWidth={0} />
+        <Tooltip />
+        <Area
+          dot={{
+            stroke: color,
+            strokeWidth: 1,
+            r: 4,
+            fill: color,
+          }}
+          type="monotone"
+          dataKey={keyY}
+          stroke={color}
+          strokeWidth={4}
+          fillOpacity={1}
+          fill="url(#colorUv)"
+        />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+}
+
+function CustomTooltip({
+  active,
+  payload,
+  label,
+}: TooltipProps<ValueType, NameType>) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="flex flex-col justify-between gap-4 bg-black p-2 text-xs">
+        <span className="text-white">
+          {new Date(label as string).toDateString()}
+        </span>
+        <span className="text-stat-win">{payload[0]?.value}%</span>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function Statistics({ stats }: { stats: GlobalStats }) {
   const mainStats = [
     {
       title: "KDA Ratio",
-      value: champion.KDA,
+      value: stats.KDA,
       color: "text-white/90",
     },
     {
       title: "Pick Rate",
-      value: champion.pickrate,
+      value: stats.pickrate,
       color: "text-sky-300",
       percentage: true,
     },
     {
       title: "Win Rate",
-      value: champion.winrate,
+      value: stats.winrate,
       color: "text-stat-win",
       percentage: true,
     },
@@ -169,48 +344,48 @@ function Statistics({ champion }: { champion: ChampionData }) {
   const secondaryStats = [
     {
       title: "Kills",
-      value: champion.kills_10_min,
+      value: stats.kills_10_min,
     },
     {
       title: "Deaths",
-      value: champion.deaths_10_min,
+      value: stats.deaths_10_min,
     },
     {
       title: "Assists",
-      value: champion.assists_10_min,
+      value: stats.assists_10_min,
     },
     {
       title: "Solo Kills",
-      value: champion.solo_kills_10_min,
+      value: stats.solo_kills_10_min,
     },
   ];
   const otherStats = [
     {
       title: "Damage",
-      value: champion.damage_10_min,
+      value: stats.damage_10_min,
     },
     {
       title: "Shielding",
-      value: champion.shielding_10_min,
+      value: stats.shielding_10_min,
     },
     {
       title: "Healing",
-      value: champion.healing_10_min,
+      value: stats.healing_10_min,
     },
     {
       title: "Self Healing",
-      value: champion.self_healing_10_min,
+      value: stats.self_healing_10_min,
     },
     {
       title: "Objective Time",
       value: Duration.fromObject({
-        seconds: parseInt(champion.objective_time_10_min),
+        seconds: parseInt(stats.objective_time_10_min),
       }).toFormat("m:ss"),
       time: true,
     },
     {
       title: "Gold Per Minute",
-      value: champion.gold_per_minute_10_min,
+      value: stats.gold_per_minute_10_min,
     },
   ];
   return (
@@ -297,7 +472,7 @@ function Statistics({ champion }: { champion: ChampionData }) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const res = await fetch(API_ENDPOINT + "/api/champions");
-  const champions = (await res.json()) as ChampionData[];
+  const champions = (await res.json()) as GlobalStats[];
   const paths = champions.map((champion) => ({
     params: {
       id: champion.id.toString(),
@@ -316,7 +491,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   console.log({ params });
   const { id } = params as IParams;
   const res = await fetch(`${API_ENDPOINT}/api/champions/${id}`);
-  const champion = (await res.json()) as ChampionData;
+  const champion = (await res.json()) as ChampionStats;
   return {
     props: { champion },
   };

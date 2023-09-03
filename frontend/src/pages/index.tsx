@@ -2,13 +2,13 @@ import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Table, { HorizontalBar } from "~/components/Table";
-import type ChampionData from "~/types/apiResponses";
 import { API_ENDPOINT } from "~/constants";
 import Link from "next/link";
 import getRole from "~/utils/getRole";
+import { type GlobalStats } from "~/types/apiResponses";
 
 type Data = {
-  champions: ChampionData[];
+  champions: GlobalStats[];
 };
 
 const Home: NextPage<Data> = ({ champions }) => {
@@ -22,7 +22,7 @@ const Home: NextPage<Data> = ({ champions }) => {
       } else {
         return [...acc, { type: role, champions: [curr] }];
       }
-    }, [] as { type: string; champions: ChampionData[] }[])
+    }, [] as { type: string; champions: GlobalStats[] }[])
     .map((role) => {
       let maxWinRate = 0;
       let maxPickRate = 0;
@@ -185,7 +185,7 @@ const Home: NextPage<Data> = ({ champions }) => {
 
 export const getStaticProps: GetStaticProps<Data> = async () => {
   const res = await fetch(API_ENDPOINT + "/api/champions");
-  const champions = (await res.json()) as ChampionData[];
+  const champions = (await res.json()) as GlobalStats[];
   return { props: { champions } };
 };
 

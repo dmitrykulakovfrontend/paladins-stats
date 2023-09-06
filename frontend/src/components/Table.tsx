@@ -1,14 +1,17 @@
 import Link from "next/link";
 import React from "react";
-
+export type TableColumn = {
+  key: string;
+  name: string;
+  bar?: boolean;
+  percentage?: boolean;
+  barColor?: React.PropsWithoutRef<BarProps>["color"];
+};
 type Props = {
   data: {
     [key: string]: React.ReactNode;
   }[];
-  columns: {
-    key: string;
-    name: string;
-  }[];
+  columns: TableColumn[];
   className?: string;
   title?: {
     text?: string;
@@ -18,6 +21,38 @@ type Props = {
 };
 
 export default function Table({ columns, data, className = "", title }: Props) {
+  const relativeBarsData = data.map((obj) => {
+    const newObj: typeof obj = {};
+
+    for (const [key, value] of Object.entries(obj)) {
+      const columnData = columns.find((col) => col.key === key);
+      if (columnData?.bar) {
+        let max = 0;
+        for (const obj2 of data) {
+          if (parseFloat(obj2[key] as string) > max) {
+            max = parseFloat(obj2[key] as string);
+          }
+        }
+        newObj[key] = (
+          <div className="flex flex-col gap-1">
+            <div>
+              {value}
+              {columnData.percentage && (
+                <span className="ml-[1px] text-sm">%</span>
+              )}
+            </div>
+            <HorizontalBar
+              color={columnData?.barColor ? columnData.barColor : "damage"}
+              value={(parseFloat(value as string) / max) * 100}
+            />
+          </div>
+        );
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+    return newObj;
+  });
   return (
     <div>
       {title?.text && (
@@ -58,7 +93,7 @@ export default function Table({ columns, data, className = "", title }: Props) {
             </tr>
           </thead>
           <tbody>
-            {data.map((rowData, index) => {
+            {relativeBarsData.map((rowData, index) => {
               return (
                 <tr
                   key={index}
@@ -84,16 +119,18 @@ export default function Table({ columns, data, className = "", title }: Props) {
 
 type BarProps = {
   value: number;
-  color?: "primary" | "secondary";
+  color?: keyof typeof colorMap;
 };
-
+const colorMap = {
+  primary: "bg-sky-300",
+  win: "bg-stat-win",
+  damage: "bg-stat-damage",
+};
 export function HorizontalBar({ value, color = "primary" }: BarProps) {
   return (
     <div className="w-full rounded-sm bg-surface-600 p-[1px] leading-[0]">
       <div
-        className={`${
-          color === "primary" ? "bg-sky-300" : "bg-stat-win"
-        } h-[4px] rounded-sm`}
+        className={`${colorMap[color]} h-[4px] rounded-sm`}
         style={{ width: `${value}%` }}
       ></div>
     </div>

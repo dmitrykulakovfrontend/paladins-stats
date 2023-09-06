@@ -17,7 +17,7 @@ import {
   type NameType,
   type ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
-import Button from "~/components/Button";
+import Filter from "~/components/Filter";
 import { API_ENDPOINT } from "~/constants";
 import {
   type WeeklyStat,
@@ -26,50 +26,7 @@ import {
 } from "~/types/apiResponses";
 import formatNumber from "~/utils/formatNumber";
 import getRole from "~/utils/getRole";
-const data = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+
 const ChampionPage: NextPage<{ champion: ChampionStats }> = ({ champion }) => {
   console.log(champion);
   return (
@@ -121,87 +78,7 @@ const ChampionPage: NextPage<{ champion: ChampionStats }> = ({ champion }) => {
           </div>
         </div>
       </div>
-      <div className="py-2">
-        <div className="flex flex-row flex-wrap gap-2">
-          <div className="flex flex-col flex-nowrap items-start justify-start">
-            <div className="text-secondary px-0.5 pb-1 text-sm">Platform</div>
-            <div className="flex flex-row flex-nowrap rounded-lg bg-surface-700 shadow-md">
-              <div className="group">
-                <Button
-                  className="flex h-10 items-center bg-surface-300 px-3.5 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-surface-300 group-first:rounded-l-lg group-last:rounded-r-lg"
-                  href="/heroes/genji?platform=pc&amp;gameMode=quickplay&amp;hero=genji"
-                >
-                  PC
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col flex-nowrap items-start justify-start">
-            <div className="text-secondary px-0.5 pb-1 text-sm">Game Mode</div>
-            <div className="flex flex-row flex-nowrap rounded-lg bg-surface-700 shadow-md">
-              <div className="group">
-                <Button
-                  className="flex h-10 items-center bg-surface-300 px-3.5 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-surface-300 group-first:rounded-l-lg group-last:rounded-r-lg"
-                  href="/heroes/genji?platform=pc&amp;gameMode=competitive&amp;hero=genji"
-                >
-                  Competitive
-                </Button>
-              </div>
-              {/* <li className="group">
-                <a
-                  className="flex h-10 items-center bg-surface-300 px-3.5 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-surface-300 group-first:rounded-l-lg group-last:rounded-r-lg"
-                  href="/heroes/genji?platform=pc&amp;gameMode=quickplay&amp;hero=genji"
-                >
-                  Quickplay
-                </a>
-              </li> */}
-            </div>
-          </div>
-          {/* <div className="w-48">
-            <div className="relative">
-              <label
-                className="text-secondary block px-0.5 pb-1 text-sm"
-                id="headlessui-listbox-label-:R6nl6tm:"
-                data-headlessui-state=""
-              >
-                Skill Tier
-              </label>
-              <button
-                className="hover:bg-surface-400 focus-visible:ring-surface-300 relative h-10 w-full rounded-lg bg-surface-700 pl-3 pr-10 text-left text-sm font-medium shadow-md focus:outline-none focus-visible:ring-2"
-                id="headlessui-listbox-button-:Ranl6tm:"
-                type="button"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                data-headlessui-state=""
-                aria-labelledby="headlessui-listbox-label-:R6nl6tm: headlessui-listbox-button-:Ranl6tm:"
-              >
-                <span className="inline-flex flex-nowrap items-center truncate leading-10">
-                  <div className="inline-flex flex-row flex-nowrap items-center justify-start gap-2">
-                    <div>All</div>
-                  </div>
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    className="h-5 w-5 text-gray-400"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-                    ></path>
-                  </svg>
-                </span>
-              </button>
-            </div>
-          </div> */}
-        </div>
-      </div>
+      <Filter />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Statistics stats={champion.globalStats} />
         <div className="col-span-1">

@@ -17,6 +17,7 @@ const config = {
         "surface-even": "#1F2942",
         "surface-odd": "#212C47",
         "stat-win": "#8FBC8F",
+        "stat-damage": "rgb(255, 99, 133)",
         "green-primary": "rgb(132 254 1 / 10%)",
       },
     },

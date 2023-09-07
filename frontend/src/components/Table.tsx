@@ -1,5 +1,10 @@
+import {
+  ArrowDownCircleIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from "@heroicons/react/24/solid";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 export type TableColumn = {
   key: string;
   name: string;
@@ -12,6 +17,9 @@ type Props = {
     [key: string]: React.ReactNode;
   }[];
   columns: TableColumn[];
+  sort?: {
+    defaultKey: string;
+  };
   className?: string;
   title?: {
     text?: string;
@@ -20,7 +28,19 @@ type Props = {
   };
 };
 
-export default function Table({ columns, data, className = "", title }: Props) {
+export default function Table({
+  columns,
+  data,
+  className = "",
+  title,
+  sort,
+}: Props) {
+  const [sortType, setSortType] = useState(sort?.defaultKey);
+  const [isDesc, setIsDesc] = useState(true);
+  const [isHoverColumn, setIsHoverColumn] = useState<string>();
+  if (sort) {
+    data.sort(sortData);
+  }
   const relativeBarsData = data.map((obj) => {
     const newObj: typeof obj = {};
 
@@ -53,6 +73,20 @@ export default function Table({ columns, data, className = "", title }: Props) {
     }
     return newObj;
   });
+
+  function sortData(a: (typeof data)[number], b: (typeof data)[number]) {
+    if (!sortType || typeof a[sortType] !== "string") {
+      console.log("Can't sort: ", sortType);
+      return -1;
+    }
+    const aValue = parseFloat(a[sortType] as string);
+    const bValue = parseFloat(b[sortType] as string);
+    if (isDesc) {
+      return bValue - aValue;
+    } else {
+      return aValue - bValue;
+    }
+  }
   return (
     <div>
       {title?.text && (
@@ -80,14 +114,53 @@ export default function Table({ columns, data, className = "", title }: Props) {
         <table className={`${className} min-w-full`}>
           <thead className="bg-surface-700">
             <tr>
-              {columns.map(({ name }, index) => (
+              {columns.map(({ name, key }, index) => (
                 <th
-                  className={`p-4 ${
-                    index === 0 ? "min-w-[145px]" : ""
-                  } text-left font-inter text-xs font-medium uppercase tracking-wide text-white/70`}
+                  className={`p-4 ${index === 0 ? "min-w-[145px]" : ""} ${
+                    sort ? "hover:cursor-pointer" : ""
+                  }  text-left font-inter text-xs font-medium uppercase tracking-wide text-white/70`}
                   key={index}
+                  onMouseEnter={() => setIsHoverColumn(key)}
+                  onMouseLeave={() => setIsHoverColumn(undefined)}
+                  onClick={
+                    sort
+                      ? () => {
+                          setIsDesc(key === sortType ? !isDesc : true);
+                          setSortType(key);
+                        }
+                      : undefined
+                  }
                 >
-                  {name}
+                  <div className="flex items-center gap-2">
+                    {name}
+                    {sort && key === sortType ? (
+                      isDesc ? (
+                        <ArrowDownIcon
+                          height={24}
+                          width={24}
+                          className="rounded-full bg-surface-400 p-1 text-white transition-all hover:cursor-pointer hover:bg-surface-300"
+                          onClick={() => setIsDesc(!isDesc)}
+                        />
+                      ) : (
+                        <ArrowUpIcon
+                          height={24}
+                          width={24}
+                          className="rounded-full bg-surface-400 p-1 text-white transition-all hover:cursor-pointer hover:bg-surface-300"
+                          onClick={() => setIsDesc(!isDesc)}
+                        />
+                      )
+                    ) : sort ? (
+                      <ArrowDownIcon
+                        height={24}
+                        width={24}
+                        className={` ${
+                          isHoverColumn === key ? "opacity-100" : "opacity-0"
+                        } rounded-full bg-surface-400 p-1 text-white transition-all hover:cursor-pointer hover:bg-surface-300`}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </th>
               ))}
             </tr>

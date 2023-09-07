@@ -143,10 +143,10 @@ function StatChart<T>({
             right: 20,
           }}
           tickLine={false}
+          fontWeight={600}
           tickFormatter={(value: string) =>
-            DateTime.fromFormat(value, "yyyy-MM-dd").toFormat("d MMM")
+            DateTime.fromFormat(value, "yyyy-MM-dd").toFormat("d MMM     ")
           }
-          tickMargin={0}
         />
         <YAxis
           axisLine={false}

@@ -1,5 +1,6 @@
 import { type GetStaticProps } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import Filter from "~/components/Filter";
 import Table, { type TableColumn } from "~/components/Table";
@@ -13,7 +14,10 @@ function rolesData({ roles }: { roles: Roles }) {
     ({ role, pickrate, winrate, KDA }) => {
       return {
         role: (
-          <div className="flex items-center  gap-2">
+          <Link
+            href={`/roles/${getRole(role).toLowerCase()}`}
+            className="flex items-center  gap-2"
+          >
             <Image
               src={`/img/rolesIcons/${getRole(role).toLowerCase()}.webp`}
               width={32}
@@ -21,7 +25,7 @@ function rolesData({ roles }: { roles: Roles }) {
               alt=""
             />
             {getRole(role)}
-          </div>
+          </Link>
         ),
         pickrate,
         winrate,
@@ -65,7 +69,11 @@ function rolesData({ roles }: { roles: Roles }) {
         </div>
       </div>
       <Filter />
-      <Table data={overviewData} columns={overviewColumns} />
+      <Table
+        sort={{ defaultKey: "pickrate" }}
+        data={overviewData}
+        columns={overviewColumns}
+      />
     </div>
   );
 }

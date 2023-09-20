@@ -14,7 +14,7 @@ import createTimeStamp from "./misc/createTimeStamp.js";
  */
 export default async function getMatchDetailsBatch(
   sessionID: string,
-  ids: string[] | string
+  ids: string[] | string,
 ) {
   const signature = createSignature(Methods.GET_MATCH_DETAILS_BATCH);
   const timestamp = createTimeStamp();

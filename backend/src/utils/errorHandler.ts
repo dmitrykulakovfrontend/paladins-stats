@@ -4,12 +4,7 @@ import { DatabaseError } from "@planetscale/database";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-async function errorHandler(
-  err: unknown,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+async function errorHandler(err: unknown, _req: Request, res: Response) {
   if (err instanceof HirezApiError) {
     const { name, message, stack, url, status } = err;
     error({
@@ -52,15 +47,13 @@ const formatStack = (stack?: string) => {
     .map((str) => str.trim())
     .reduce(
       (acc: Record<string, string>, curr, i) => ((acc[i] = curr), acc),
-      {}
+      {},
     );
 };
 
-export function catchErrors(
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
-): RequestHandler {
+export function catchErrors(fn: RequestHandler): RequestHandler {
   return function (req: Request, res: Response, next: NextFunction) {
-    fn(req, res, next).catch(next);
+    fn(req, res, next);
   };
 }
 

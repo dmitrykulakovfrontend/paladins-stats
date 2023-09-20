@@ -10,14 +10,14 @@ const router = Router();
 
 router.get(
   "/",
-  catchErrors(async (_req, _res) => {
+  catchErrors(async () => {
     // const matchesFromDB = await db
     //   .selectFrom("matches")
     //   .selectAll()
     //   .where("date","=", "2023-04-24")
     //   .limit(10)
     //   .execute();
-  })
+  }),
 );
 router.get(
   "/daily",
@@ -30,7 +30,7 @@ router.get(
     //   .execute();
     await insertDailyStats();
     res.status(200).json({ success: true });
-  })
+  }),
 );
 router.get(
   "/dataused",
@@ -38,7 +38,7 @@ router.get(
     const session = await createSession();
     const dataUsed = await getDataUsed(session);
     res.status(200).json(dataUsed);
-  })
+  }),
 );
 router.get(
   "/champions",
@@ -49,7 +49,7 @@ router.get(
       .innerJoin(
         "global_daily_stats as gds",
         "ds.the_day_total_matches_id",
-        "gds.id"
+        "gds.id",
       )
       .where(sql`ds.date >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)`)
       .select([
@@ -59,44 +59,44 @@ router.get(
         "c.icon",
         sql`ROUND(AVG(ds.wins / (ds.wins + ds.loses) * 100), 2)`.as("winrate"),
         sql`ROUND(AVG((ds.wins + ds.loses) / gds.matches * 100), 2)`.as(
-          "pickrate"
+          "pickrate",
         ),
         sql`ROUND(AVG((ds.kills + (ds.assists / 2)) / ds.deaths), 2)`.as("KDA"),
         sql`ROUND(AVG(ds.damage / (ds.match_duration / 60) * 10), 2)`.as(
-          "damage_10_min"
+          "damage_10_min",
         ),
         sql`ROUND(AVG(ds.deaths / (ds.match_duration / 60) * 10), 2)`.as(
-          "deaths_10_min"
+          "deaths_10_min",
         ),
         sql`ROUND(AVG(ds.assists / (ds.match_duration / 60) * 10), 2)`.as(
-          "assists_10_min"
+          "assists_10_min",
         ),
         sql`ROUND(AVG(ds.kills / (ds.match_duration / 60) * 10), 2)`.as(
-          "kills_10_min"
+          "kills_10_min",
         ),
         sql`ROUND(AVG(ds.solo_kills / (ds.match_duration / 60) * 10), 2)`.as(
-          "solo_kills_10_min"
+          "solo_kills_10_min",
         ),
         sql`ROUND(AVG(ds.self_healing / (ds.match_duration / 60) * 10), 2)`.as(
-          "self_healing_10_min"
+          "self_healing_10_min",
         ),
         sql`ROUND(AVG(ds.gold_per_minute / (ds.match_duration / 60) * 10), 2)`.as(
-          "gold_per_minute_10_min"
+          "gold_per_minute_10_min",
         ),
         sql`ROUND(AVG(ds.healing / (ds.match_duration / 60) * 10), 2)`.as(
-          "healing_10_min"
+          "healing_10_min",
         ),
         sql`ROUND(AVG(ds.shielding / (ds.match_duration / 60) * 10), 2)`.as(
-          "shielding_10_min"
+          "shielding_10_min",
         ),
         sql`ROUND(AVG(ds.objective_time / (ds.match_duration / 60) * 10), 2)`.as(
-          "objective_time_10_min"
+          "objective_time_10_min",
         ),
       ])
       .groupBy("c.id")
       .execute();
     res.status(200).json(response);
-  })
+  }),
 );
 
 router.get(
@@ -108,7 +108,7 @@ router.get(
       .innerJoin(
         "global_daily_stats as gds",
         "ds.the_day_total_matches_id",
-        "gds.id"
+        "gds.id",
       )
       .where(sql`ds.date >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)`)
       .where("c.id", "=", +req.params.id)
@@ -119,38 +119,38 @@ router.get(
         "c.icon",
         sql`ROUND(AVG(ds.wins / (ds.wins + ds.loses) * 100), 2)`.as("winrate"),
         sql`ROUND(AVG((ds.wins + ds.loses) / gds.matches * 100), 2)`.as(
-          "pickrate"
+          "pickrate",
         ),
         sql`ROUND(AVG((ds.kills + (ds.assists / 2)) / ds.deaths), 2)`.as("KDA"),
         sql`ROUND(AVG(ds.damage / (ds.match_duration / 60) * 10), 2)`.as(
-          "damage_10_min"
+          "damage_10_min",
         ),
         sql`ROUND(AVG(ds.deaths / (ds.match_duration / 60) * 10), 2)`.as(
-          "deaths_10_min"
+          "deaths_10_min",
         ),
         sql`ROUND(AVG(ds.assists / (ds.match_duration / 60) * 10), 2)`.as(
-          "assists_10_min"
+          "assists_10_min",
         ),
         sql`ROUND(AVG(ds.kills / (ds.match_duration / 60) * 10), 2)`.as(
-          "kills_10_min"
+          "kills_10_min",
         ),
         sql`ROUND(AVG(ds.solo_kills / (ds.match_duration / 60) * 10), 2)`.as(
-          "solo_kills_10_min"
+          "solo_kills_10_min",
         ),
         sql`ROUND(AVG(ds.self_healing / (ds.match_duration / 60) * 10), 2)`.as(
-          "self_healing_10_min"
+          "self_healing_10_min",
         ),
         sql`ROUND(AVG(ds.gold_per_minute / (ds.match_duration / 60) * 10), 2)`.as(
-          "gold_per_minute_10_min"
+          "gold_per_minute_10_min",
         ),
         sql`ROUND(AVG(ds.healing / (ds.match_duration / 60) * 10), 2)`.as(
-          "healing_10_min"
+          "healing_10_min",
         ),
         sql`ROUND(AVG(ds.shielding / (ds.match_duration / 60) * 10), 2)`.as(
-          "shielding_10_min"
+          "shielding_10_min",
         ),
         sql`ROUND(AVG(ds.objective_time / (ds.match_duration / 60) * 10), 2)`.as(
-          "objective_time_10_min"
+          "objective_time_10_min",
         ),
       ])
       .groupBy("c.id")
@@ -162,7 +162,7 @@ router.get(
       .innerJoin(
         "global_daily_stats as gds",
         "ds.the_day_total_matches_id",
-        "gds.id"
+        "gds.id",
       )
       .where("c.id", "=", +req.params.id)
       .where(sql`ds.date >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)`)
@@ -176,7 +176,7 @@ router.get(
       globalStats: globalStats,
       weeklyStats,
     });
-  })
+  }),
 );
 
 router.get(
@@ -188,44 +188,44 @@ router.get(
       .innerJoin(
         "global_daily_stats as gds",
         "ds.the_day_total_matches_id",
-        "gds.id"
+        "gds.id",
       )
       .select([
         "c.role",
         sql`ROUND(AVG(ds.wins / (ds.wins + ds.loses) * 100), 2)`.as("winrate"),
         sql`ROUND(SUM(ds.wins + ds.loses) / (select sum(gds2.matches) from global_daily_stats as gds2 where gds2.date >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)) * 100, 2)`.as(
-          "pickrate"
+          "pickrate",
         ),
         sql`ROUND(AVG((ds.kills + (ds.assists / 2)) / ds.deaths), 2)`.as("KDA"),
         sql`ROUND(AVG(ds.damage / (ds.match_duration / 60) * 10), 2)`.as(
-          "damage_10_min"
+          "damage_10_min",
         ),
         sql`ROUND(AVG(ds.deaths / (ds.match_duration / 60) * 10), 2)`.as(
-          "deaths_10_min"
+          "deaths_10_min",
         ),
         sql`ROUND(AVG(ds.assists / (ds.match_duration / 60) * 10), 2)`.as(
-          "assists_10_min"
+          "assists_10_min",
         ),
         sql`ROUND(AVG(ds.kills / (ds.match_duration / 60) * 10), 2)`.as(
-          "kills_10_min"
+          "kills_10_min",
         ),
         sql`ROUND(AVG(ds.solo_kills / (ds.match_duration / 60) * 10), 2)`.as(
-          "solo_kills_10_min"
+          "solo_kills_10_min",
         ),
         sql`ROUND(AVG(ds.self_healing / (ds.match_duration / 60) * 10), 2)`.as(
-          "self_healing_10_min"
+          "self_healing_10_min",
         ),
         sql`ROUND(AVG(ds.gold_per_minute / (ds.match_duration / 60) * 10), 2)`.as(
-          "gold_per_minute_10_min"
+          "gold_per_minute_10_min",
         ),
         sql`ROUND(AVG(ds.healing / (ds.match_duration / 60) * 10), 2)`.as(
-          "healing_10_min"
+          "healing_10_min",
         ),
         sql`ROUND(AVG(ds.shielding / (ds.match_duration / 60) * 10), 2)`.as(
-          "shielding_10_min"
+          "shielding_10_min",
         ),
         sql`ROUND(AVG(ds.objective_time / (ds.match_duration / 60) * 10), 2)`.as(
-          "objective_time_10_min"
+          "objective_time_10_min",
         ),
       ])
       .where(sql`ds.date >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)`)
@@ -236,7 +236,7 @@ router.get(
     res.status(200).json({
       rolesData,
     });
-  })
+  }),
 );
 
 export default router;

@@ -12,6 +12,7 @@ type Data = {
 };
 
 const Home: NextPage<Data> = ({ champions }) => {
+  console.log(champions)
   const roles = champions
     .reduce((acc, curr) => {
       const role = curr.role;

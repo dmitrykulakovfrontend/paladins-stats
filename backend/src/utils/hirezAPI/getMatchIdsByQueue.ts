@@ -22,7 +22,7 @@ type ProvidedOptions = {
  */
 export default async function getMatchIdsByQueue(
   sessionID: string,
-  options: ProvidedOptions = {}
+  options: ProvidedOptions = {},
 ) {
   if (!options.date) options.date = DateTime.now().minus({ day: 1 });
   const signature = createSignature(Methods.GET_MATCH_IDS_BY_QUEUE);
@@ -46,7 +46,7 @@ export default async function getMatchIdsByQueue(
     const promises: Promise<GetMatchIdsByQueueResponse | HirezApiError>[] = [];
     for (let hour = 0; hour <= 23; hour++) {
       promises.push(
-        fetchAPI<GetMatchIdsByQueueResponse>(`${urlMatchQueueIds}/${hour}`)
+        fetchAPI<GetMatchIdsByQueueResponse>(`${urlMatchQueueIds}/${hour}`),
       );
     }
     const responses = await Promise.all(promises);
@@ -54,7 +54,7 @@ export default async function getMatchIdsByQueue(
   } else if (options.hour) {
     // fetch specified hour
     data = await fetchAPI<GetMatchIdsByQueueResponse>(
-      `${urlMatchQueueIds}/${options.hour}`
+      `${urlMatchQueueIds}/${options.hour}`,
     );
   } else {
     throw new Error("Something went wrong");

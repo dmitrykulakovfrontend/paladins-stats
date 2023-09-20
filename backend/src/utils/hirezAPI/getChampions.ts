@@ -5,8 +5,8 @@ import createSignature from "./misc/createSignature.js";
 import createTimeStamp from "./misc/createTimeStamp.js";
 
 /**
- * 
- * 
+ *
+ *
  *
  *
  *

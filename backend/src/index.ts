@@ -13,9 +13,10 @@ import cors from "cors";
 import { DatabaseError } from "@planetscale/database";
 
 const app: Application = express();
-const port = process.env.PORT || 5001;
+const port = Number(process.env.PORT || 8080);
 // Use Morgan with the Chalk-formatted output
 app.use(logger);
+
 app.use(cors({ origin: "*" }));
 
 // Body parsing Middleware
@@ -80,7 +81,7 @@ app.use("/api", apiRouter);
 app.use(errorHandler);
 
 try {
-  app.listen(port, () => {
+  app.listen(port, "0.0.0.0", () => {
     console.log(`Connected successfully on http://localhost:${port}`);
   });
 } catch (e) {

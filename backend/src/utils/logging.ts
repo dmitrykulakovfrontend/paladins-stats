@@ -16,7 +16,7 @@ function log(type: statuses, message: unknown) {
     case "Warning": {
       console.log(
         chalk.bgYellow.bold.black(" WARNING "),
-        chalk.yellow.bold(message)
+        chalk.yellow.bold(message),
       );
       break;
     }
@@ -54,7 +54,7 @@ export async function discordNotification(message: unknown) {
     content: `<@${process.env.DISCORD_MYID}> \`\`\`json\n${JSON.stringify(
       message,
       null,
-      2
+      2,
     )}\n\`\`\``,
   });
 }

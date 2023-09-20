@@ -8,7 +8,7 @@ export async function createSession() {
   const signature = createSignature(Methods.CREATE_SESSION);
   const timestamp = createTimeStamp();
   const session = await fetchAPI<CreateSessionResponse>(
-    `${API_ENDPOINT}/createsessionjson/${process.env.DEV_ID}/${signature}/${timestamp}`
+    `${API_ENDPOINT}/createsessionjson/${process.env.DEV_ID}/${signature}/${timestamp}`,
   );
   return session.session_id;
 }

@@ -13,7 +13,7 @@ export type GetDataUsedResponse = [
     Total_Requests_Today: number;
     Total_Sessions_Today: number;
     ret_msg: string;
-  }
+  },
 ];
 export type GetMatchIdsByQueueResponse = {
   Active_Flag: string;

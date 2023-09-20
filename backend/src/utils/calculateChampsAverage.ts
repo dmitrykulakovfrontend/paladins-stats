@@ -5,7 +5,7 @@ import { error, info } from "./logging.js";
 
 export default async function calculateChampsAverage(
   sessionID: string,
-  ids: string[]
+  ids: string[],
 ) {
   if (!ids) {
     throw new Error(`No specified ids`);
@@ -59,7 +59,7 @@ export default async function calculateChampsAverage(
 
   // Calculate average ranked for each match
   matches.forEach(
-    (match) => (match.averageRanked = Math.round((match.averageRanked /= 10)))
+    (match) => (match.averageRanked = Math.round((match.averageRanked /= 10))),
   );
 
   const matchesAmount = matches.length;
@@ -103,11 +103,11 @@ export default async function calculateChampsAverage(
   matches.forEach((match) => {
     match.players.forEach((player) => {
       const champion = updatedChampions.find(
-        (champion) => champion.id === player.ChampionId
+        (champion) => champion.id === player.ChampionId,
       );
       if (!champion) {
         error(
-          `No found champion for ${player.ChampionId} ${player.Reference_Name}`
+          `No found champion for ${player.ChampionId} ${player.Reference_Name}`,
         );
         return;
       }
@@ -154,7 +154,7 @@ export default async function calculateChampsAverage(
   return updatedChampions
     .filter(({ timesPicked }) => timesPicked > 0)
     .sort(
-      (championA, championB) => championB.timesPicked - championA.timesPicked
+      (championA, championB) => championB.timesPicked - championA.timesPicked,
     );
   // res
   //   .status(200)

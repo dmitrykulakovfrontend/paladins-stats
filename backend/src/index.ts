@@ -13,7 +13,7 @@ import cors from "cors";
 import { DatabaseError } from "@planetscale/database";
 
 const app: Application = express();
-const port = Number(process.env.PORT || 8080);
+const port = Number(process.env.PORT || 5000);
 // Use Morgan with the Chalk-formatted output
 app.use(logger);
 
@@ -26,7 +26,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (_req, res) => {
   console.log("request");
   // throw new Error("Discord test");
-  return res.status(StatusCodes.OK).json({ message: "Server works!" });
+  return res.status(StatusCodes.OK).json({
+    message: "Server works!",
+  });
 });
 
 async function runDailyLogic() {

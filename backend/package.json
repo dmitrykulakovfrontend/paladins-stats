@@ -5,14 +5,16 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "node build/index.js",
-    "build": "rimraf build & swc ./src -d build",
+    "build": "rimraf build && swc ./src -d build",
     "dev": "nodemon ./src/index.ts",
     "generate:types": "kysely-codegen --out-file ./src/types/db.ts",
-    "lint": "prettier ./src --write & eslint src/**"
+    "lint": "prettier ./src --write && eslint src/**",
+    "start:docker": "npm run build && npm run start"
   },
-  "keywords": [
-    "express"
-  ],
+  "engines": {
+    "npm": "~8.1.2",
+    "node": "~18.12.1"
+  },
   "author": "Dmitry Kulakov",
   "license": "MIT",
   "type": "module",

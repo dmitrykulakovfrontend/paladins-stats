@@ -14,7 +14,7 @@ import { DatabaseError } from "@planetscale/database";
 
 const app: Application = express();
 const port = Number(process.env.PORT || 5000);
-export const isDev = process.env.NODE_ENV === "development";
+export const isDev = process.env.NODE_ENV !== "production";
 // Use Morgan with the Chalk-formatted output
 app.use(logger);
 

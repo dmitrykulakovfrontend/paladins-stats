@@ -6,8 +6,6 @@ meta:
     version: 18
 
 build:
-  artifacts:
-    "backend": /
   additionalCommands: npm run build
 
 run:

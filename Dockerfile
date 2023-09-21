@@ -3,11 +3,11 @@ FROM node:18-alpine as base
 
 WORKDIR /usr/src/app
 
-COPY ./backend/package*.json ./
+COPY ./package*.json ./
 
 RUN npm ci
 
-COPY ./backend ./
+COPY ./ ./
 
 EXPOSE 80
 

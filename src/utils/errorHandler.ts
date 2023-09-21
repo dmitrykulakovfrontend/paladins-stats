@@ -2,7 +2,6 @@ import { discordNotification, error } from "./logging.js";
 import { HirezApiError } from "./fetchAPI.js";
 import { DatabaseError } from "@planetscale/database";
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { StatusCodes } from "http-status-codes";
 
 async function errorHandler(err: unknown, _req: Request, res: Response) {
   if (err instanceof HirezApiError) {
@@ -36,7 +35,7 @@ async function errorHandler(err: unknown, _req: Request, res: Response) {
       message,
       stack: formatStack(stack),
     });
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ name, message });
+    res.status(500).json({ name, message });
   }
 }
 

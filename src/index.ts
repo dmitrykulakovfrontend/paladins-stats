@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import express, { Application } from "express";
 import { logger, error, discordNotification } from "./utils/logging.js";
-import { StatusCodes } from "http-status-codes";
 import apiRouter from "./routes/api/index.js";
 import errorHandler from "./utils/errorHandler.js";
 import { HirezApiError } from "./utils/fetchAPI.js";
@@ -27,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (_req, res) => {
   console.log("request");
   // throw new Error("Discord test");
-  return res.status(StatusCodes.OK).json({
+  return res.status(200).json({
     message: "Server works!",
   });
 });

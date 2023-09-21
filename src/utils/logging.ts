@@ -31,7 +31,7 @@ export const logger = morgan(function (tokens, req, res) {
     "\n",
     chalk.hex("#f94144").bold("🍄  Logs --> "), // red
     chalk.hex("#90be6d").bold(tokens.method(req, res)), // green
-    chalk.hex("#f9c74f").bold(tokens.status(req, res) + " ="), // yellow
+    // chalk.hex("#f9c74f").bold(tokens.status(req, res) + " ="), // yellow
     chalk.hex("#90be6d").bold(tokens.status(req, res)), // green
     chalk.hex("#43aa8b").bold(tokens.url(req, res)), // teal
     chalk.hex("#577590").bold(tokens["response-time"](req, res) + " ms"), // blue-gray

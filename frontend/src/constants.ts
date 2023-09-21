@@ -1,7 +1,7 @@
 export const API_ENDPOINT =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:5001"
-    : "https://paladins-stats-production.up.railway.app/";
+    ? "http://localhost:5000"
+    : "https://www.api.paladinsanalyzer.site/";
 
 export const Minutes15InSeconds = 900;
 export enum Methods {

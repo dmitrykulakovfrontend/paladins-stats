@@ -13,11 +13,12 @@ import cors from "cors";
 import { DatabaseError } from "@planetscale/database";
 
 const app: Application = express();
-const port = Number(process.env.PORT || 80);
+const port = Number(process.env.PORT || 5000);
+export const isDev = process.env.NODE_ENV === "development";
 // Use Morgan with the Chalk-formatted output
 app.use(logger);
 
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: isDev ? "*" : "https://www.paladinsanalyzer.site" }));
 
 // Body parsing Middleware
 app.use(express.json());

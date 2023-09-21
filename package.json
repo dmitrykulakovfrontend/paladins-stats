@@ -9,7 +9,8 @@
     "dev": "nodemon ./src/index.ts",
     "generate:types": "kysely-codegen --out-file ./src/types/db.ts",
     "lint": "prettier ./src --write && eslint src/**",
-    "start:docker": "npm run build && npm run start"
+    "start:docker": "npm run build && npm run start",
+    "dev:docker": "nodemon -L ./src/index.ts"
   },
   "engines": {
     "npm": "~8.1.2",

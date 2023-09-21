@@ -1,4 +1,4 @@
-# This Dockerfile is to deploy backend on hosting, hosting requires to have a dockerfile in a root folder
+# This Dockerfile is to deploy backend on hosting
 FROM node:18-alpine as base
 
 WORKDIR /usr/src/app
@@ -9,6 +9,6 @@ RUN npm ci
 
 COPY ./ ./
 
-EXPOSE 80
+EXPOSE 5000
 
 CMD [ "npm", "run", "start:docker" ]
